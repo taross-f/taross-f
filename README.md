@@ -1,16 +1,9 @@
-<p align="left"> 
-  <a href="http://twitter.com/taross__f">
-    <img height="20" src="https://img.shields.io/twitter/follow/taross__f?label=Twitter&logo=twitter&style=flat" />
-  </a>
-  <a href="https://github.com/taross-f">
-    <img height="20" src="https://img.shields.io/github/followers/taross-f?label=follow&logo=github&style=flat" />
-  </a>
-</p>
-
-
-### Hi there 👋
-
-
+<a href="https://github.com/anuraghazra/github-readme-stats">
+  <img align="left" src="https://github-readme-stats.vercel.app/api?username=taross-f&count_private=true&show_icons=true&&theme=dark" />
+</a>
+<a href="https://github.com/anuraghazra/github-readme-stats">
+  <img align="left" src="https://github-readme-stats.vercel.app/api/top-langs/?username=taross-f&&theme=dark" />
+</a>
 
 <!--
 **taross-f/taross-f** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
