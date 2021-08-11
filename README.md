@@ -1,4 +1,16 @@
+<p align="left"> 
+  <a href="http://twitter.com/taross__f">
+    <img height="20" src="https://img.shields.io/twitter/follow/taross__f?label=Twitter&logo=twitter&style=flat" />
+  </a>
+  <a href="https://github.com/taross-f">
+    <img height="20" src="https://img.shields.io/github/followers/taross-f?label=follow&logo=github&style=flat" />
+  </a>
+</p>
+
+
 ### Hi there 👋
+
+
 
 <!--
 **taross-f/taross-f** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
