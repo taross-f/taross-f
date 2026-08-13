@@ -1,0 +1,20 @@
+name: 🧱 ブロックを落とす / Drop a block
+description: x 座標をひとつ選んでタワーにブロックを積みます
+title: 'drop: '
+labels: ['play']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        土台は x = 140 から 340 までの 200px です。この範囲の整数をひとつだけ入力してください。
+        ブロックの大きさと傾きは Issue 番号から決まるので、選ぶことはできません。
+
+        The platform spans x = 140 to 340. Enter one integer in that range.
+        Your block's size and tilt are derived from the issue number.
+  - type: input
+    id: x
+    attributes:
+      label: 投下する x 座標
+      placeholder: '240'
+    validations:
+      required: true

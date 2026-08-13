@@ -1,0 +1,122 @@
+name: tower
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  # Serialise every play. Two runs updating state.json at once would corrupt it.
+  group: tower-game
+  cancel-in-progress: false
+
+jobs:
+  play:
+    if: contains(github.event.issue.labels.*.name, 'play')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the rebase-and-retry below has something to work with.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Simulate the drop
+        id: play
+        env:
+          # The issue body is attacker controlled. It only ever travels through
+          # the environment into Node - never interpolated into a shell command.
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          ISSUE_CREATED_AT: ${{ github.event.issue.created_at }}
+        run: node src/main.js
+
+      - name: Commit the new board
+        id: commit
+        if: steps.play.outputs.commit == 'true'
+        env:
+          COMMIT_MESSAGE: ${{ steps.play.outputs.commit_message }}
+        run: |
+          set -u
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add state.json assets README.md
+
+          if git diff --cached --quiet; then
+            echo 'nothing changed'
+            echo 'pushed=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "$COMMIT_MESSAGE"
+
+          if git push origin HEAD:"${GITHUB_REF_NAME}"; then
+            echo 'pushed=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo 'push rejected, rebasing once and retrying'
+          if git pull --rebase origin "${GITHUB_REF_NAME}" \
+            && git push origin HEAD:"${GITHUB_REF_NAME}"; then
+            echo 'pushed=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git rebase --abort || true
+          echo 'pushed=false' >> "$GITHUB_OUTPUT"
+
+      - name: Reply and close
+        if: always() && steps.play.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPLY_FILE: ${{ steps.play.outputs.reply_file }}
+          WANTED_COMMIT: ${{ steps.play.outputs.commit }}
+          PUSHED: ${{ steps.commit.outputs.pushed }}
+        run: |
+          set -eu
+          API="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}"
+          BODY_FILE="${RUNNER_TEMP}/reply-body.md"
+
+          if [ "${WANTED_COMMIT}" = 'true' ] && [ "${PUSHED}" != 'true' ]; then
+            printf '%s\n' \
+              '盤面が混雑しています。この手は反映できませんでした。' \
+              '' \
+              'お手数ですが、もう一度 issue を立て直してください。' \
+              '' \
+              'The board was busy and this drop was not recorded. Please open a new issue to retry.' \
+              > "${BODY_FILE}"
+          elif [ -n "${REPLY_FILE:-}" ] && [ -f "${REPLY_FILE}" ]; then
+            cp "${REPLY_FILE}" "${BODY_FILE}"
+          else
+            printf '%s\n' '処理に失敗しました。もう一度 issue を立て直してください。' \
+              > "${BODY_FILE}"
+          fi
+
+          # jq -Rs does the JSON escaping, so no issue content is ever parsed by
+          # the shell or spliced into a command line.
+          jq -Rs '{body: .}' "${BODY_FILE}" > "${RUNNER_TEMP}/comment.json"
+
+          curl -sS --fail-with-body -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'Content-Type: application/json' \
+            --data @"${RUNNER_TEMP}/comment.json" \
+            "${API}/comments" > /dev/null
+
+          curl -sS --fail-with-body -X PATCH \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'Content-Type: application/json' \
+            --data '{"state":"closed","state_reason":"completed"}' \
+            "${API}" > /dev/null

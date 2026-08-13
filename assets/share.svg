@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Tower game round 1: 1 blocks stacked, current height 25 pixels, best ever 25 pixels.">
+<rect x="0" y="0" width="1200" height="630" fill="#070c14"/>
+<text x="600" y="72" text-anchor="middle" font-family="monospace" font-size="30" fill="#8fa2c4">SHARED TOWER</text>
+<text x="600" y="126" text-anchor="middle" font-family="monospace" font-size="54" font-weight="bold" fill="#ffd166">25 px / 1 blocks</text>
+<clipPath id="board"><rect x="224" y="145" width="752" height="423" rx="6"/></clipPath>
+<g clip-path="url(#board)">
+<g transform="translate(224 145) scale(1.57)">
+<rect x="0" y="0" width="480" height="270" fill="#0d1420"/><line x1="0" y1="200" x2="480" y2="200" stroke="#1a2436" stroke-width="1"/><text x="6" y="196" font-family="monospace" font-size="8" fill="#1a2436">50</text><line x1="0" y1="150" x2="480" y2="150" stroke="#1a2436" stroke-width="1"/><text x="6" y="146" font-family="monospace" font-size="8" fill="#1a2436">100</text><line x1="0" y1="100" x2="480" y2="100" stroke="#1a2436" stroke-width="1"/><text x="6" y="96" font-family="monospace" font-size="8" fill="#1a2436">150</text><line x1="0" y1="50" x2="480" y2="50" stroke="#1a2436" stroke-width="1"/><text x="6" y="46" font-family="monospace" font-size="8" fill="#1a2436">200</text><rect x="0" y="250" width="480" height="20" fill="#131c2c"/><rect x="140" y="250" width="200" height="9" fill="#31405f"/><line x1="140" y1="250" x2="340" y2="250" stroke="#5a729e" stroke-width="2"/><line x1="140" y1="250" x2="140" y2="259" stroke="#5a729e" stroke-width="1"/><text x="143" y="268" text-anchor="start" font-family="monospace" font-size="9" fill="#8fa2c4">x=140</text><line x1="340" y1="250" x2="340" y2="259" stroke="#5a729e" stroke-width="1"/><text x="337" y="268" text-anchor="end" font-family="monospace" font-size="9" fill="#8fa2c4">x=340</text><g transform="translate(223.79 237.52) rotate(0.06)"><title>#1 taross-f</title><rect x="-17" y="-12.5" width="34" height="25" rx="2" fill="hsl(47, 62%, 46%)" stroke="#ffffff" stroke-width="2"/><rect x="-17" y="-12.5" width="34" height="3" rx="1" fill="#ffffff" opacity="0.16"/></g>
+</g></g>
+<text x="600" y="600" text-anchor="middle" font-family="monospace" font-size="26" fill="#e8eef9">github.com/taross-f</text>
+</svg>
