@@ -22,9 +22,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const PATHS = {
   state: join(ROOT, 'state.json'),
   readme: join(ROOT, 'README.md'),
+  readmeJa: join(ROOT, 'README.ja.md'),
   board: join(ROOT, 'assets', 'board.svg'),
   share: join(ROOT, 'assets', 'share.svg'),
 };
+
+/** Every README the board is mirrored into, and the language each is written in. */
+export const README_TARGETS = [
+  { path: PATHS.readme, lang: 'en' },
+  { path: PATHS.readmeJa, lang: 'ja' },
+];
 
 export const MARKER_START = '<!-- BOARD:START -->';
 export const MARKER_END = '<!-- BOARD:END -->';
@@ -204,34 +211,63 @@ function escapeMd(value) {
   return String(value).replace(/([\\`*_{}[\]()#+\-.!|])/g, '\\$1');
 }
 
-export function buildBoardBlock(state, view, repo) {
+/**
+ * Wording for the generated block, per language. English is the primary
+ * README; Japanese lives in README.ja.md and is reachable from the switcher.
+ */
+const BOARD_TEXT = {
+  en: {
+    alt: 'Tower board',
+    cta: (url) => `**[▶ Drop a block](${url})** — `
+      + `open an issue with one integer between ${X_MIN} and ${X_MAX}. That is the whole game.`,
+    statsHead: ['Round', 'Height', 'Blocks', 'Best ever'],
+    collapse: (c) => `> Round ${c.round} came down at ${escapeMd(c.height)} px `
+      + `with ${c.blocks} blocks. Last drop by @${escapeMd(c.collapsedBy)}. A new round is underway.`,
+    fameSummary: 'Hall of fame',
+    fameHead: ['#', 'Round', 'Height', 'Blocks', 'Last drop'],
+  },
+  ja: {
+    alt: 'タワーの盤面',
+    cta: (url) => `**[▶ 1手打つ](${url})** — `
+      + `x 座標 (${X_MIN}–${X_MAX}) を書いて issue を立てるだけ。`,
+    statsHead: ['周回', '高さ', 'ブロック', '最高記録'],
+    collapse: (c) => `> Round ${c.round} は ${escapeMd(c.height)} px / ${c.blocks} blocks で崩壊。`
+      + `最後に置いたのは @${escapeMd(c.collapsedBy)}。新しい周回が始まっています。`,
+    fameSummary: '殿堂入り',
+    fameHead: ['#', '周回', '高さ', 'ブロック', '最後の一手'],
+  },
+};
+
+export const LANGUAGES = Object.keys(BOARD_TEXT);
+
+export function buildBoardBlock(state, view, repo, lang = 'en') {
+  const t = BOARD_TEXT[lang];
+  if (!t) throw new Error(`no board wording for language "${lang}"`);
+
   const newIssue = `https://github.com/${repo}/issues/new?template=play.yml`;
   // camo caches aggressively; the query is what makes an updated board show up.
   const src = `assets/board.svg?v=${state.actions.length}-${state.round}`;
 
   const lines = [];
-  lines.push(`[![Tower board](${src})](${newIssue})`);
+  lines.push(`[![${t.alt}](${src})](${newIssue})`);
   lines.push('');
-  lines.push(`**[▶ 1手打つ / Drop a block](${newIssue})** — `
-    + `x 座標 (${X_MIN}–${X_MAX}) を書いて issue を立てるだけ。`);
+  lines.push(t.cta(newIssue));
   lines.push('');
-  lines.push('| Round | Height | Blocks | Best ever |');
+  lines.push(`| ${t.statsHead.join(' | ')} |`);
   lines.push('|---:|---:|---:|---:|');
   lines.push(`| ${state.round} | ${Math.round(view.height)} px | ${view.blocks.length} `
     + `| ${Math.round(view.bestOverall)} px |`);
 
   if (view.collapsedBy) {
-    const c = view.collapsedBy;
     lines.push('');
-    lines.push(`> Round ${c.round} は ${escapeMd(c.height)} px / ${c.blocks} blocks で崩壊。`
-      + `最後に置いたのは @${escapeMd(c.collapsedBy)}。新しい周回が始まっています。`);
+    lines.push(t.collapse(view.collapsedBy));
   }
 
   if (state.hallOfFame.length > 0) {
     lines.push('');
-    lines.push('<details><summary>殿堂入り / Hall of fame</summary>');
+    lines.push(`<details><summary>${t.fameSummary}</summary>`);
     lines.push('');
-    lines.push('| # | Round | Height | Blocks | Last drop |');
+    lines.push(`| ${t.fameHead.join(' | ')} |`);
     lines.push('|---:|---:|---:|---:|:--|');
     state.hallOfFame.forEach((e, i) => {
       lines.push(`| ${i + 1} | ${e.round} | ${e.height} px | ${e.blocks} `
@@ -242,6 +278,23 @@ export function buildBoardBlock(state, view, repo) {
   }
 
   return lines.join('\n');
+}
+
+/**
+ * Rewrite the marked region in every README that exists.
+ *
+ * A translation that is present but stale is worse than no translation, so a
+ * README that exists without markers is an error rather than a quiet skip.
+ */
+export function refreshReadmes(state, view, repo) {
+  const updated = [];
+  for (const { path, lang } of README_TARGETS) {
+    if (!existsSync(path)) continue;
+    const current = readFileSync(path, 'utf8');
+    writeFileSync(path, replaceBoardBlock(current, buildBoardBlock(state, view, repo, lang)));
+    updated.push(path);
+  }
+  return updated;
 }
 
 // ---------------------------------------------------------------------------
@@ -280,27 +333,34 @@ function successReply(applied, repo) {
   const lines = [];
 
   if (collapseEntry) {
-    lines.push(`## 崩壊 / Collapsed`);
+    lines.push('## Collapsed / 崩壊');
     lines.push('');
-    lines.push(`Round ${collapseEntry.round} はここで終わりました。`
-      + `**${collapseEntry.height} px / ${collapseEntry.blocks} blocks** で記録。`);
+    lines.push(`Round ${collapseEntry.round} ended here, recorded at `
+      + `**${collapseEntry.height} px / ${collapseEntry.blocks} blocks**.`);
     lines.push('');
-    lines.push(`次の周回 (Round ${state.round}) が空の土台から始まっています。`);
+    lines.push(`Round ${state.round} has started from an empty platform.`);
+    lines.push('');
+    lines.push(`Round ${collapseEntry.round} は ${collapseEntry.height} px / `
+      + `${collapseEntry.blocks} blocks で終了。次の周回が始まっています。`);
   } else {
-    lines.push(`## 設置 / Placed`);
+    lines.push('## Placed / 設置');
     lines.push('');
-    lines.push(`高さ **${Math.round(result.height)} px**、ブロック **${view.blocks.length} 個**、`
-      + `Round **${state.round}**。`);
+    lines.push(`Height **${Math.round(result.height)} px**, `
+      + `**${view.blocks.length}** blocks, Round **${state.round}**.`);
     if (applied.recordBroken) {
       lines.push('');
-      lines.push('自己ベスト更新です。');
+      lines.push('That is a new record.');
     }
+    lines.push('');
+    lines.push(`高さ ${Math.round(result.height)} px、ブロック ${view.blocks.length} 個、`
+      + `Round ${state.round}。`);
   }
 
   if (applied.drifted) {
     lines.push('');
-    lines.push('> 注意: 保存済みのログを再生したところ現在のシミュレータでは自立しませんでした。'
-      + '前の周回は記録として閉じ、新しい周回から再開しています。');
+    lines.push('> Note: replaying the stored log no longer stands up under the current '
+      + 'simulator. The previous round was closed out as a record and play resumed from a '
+      + 'new one. / 前の周回は記録として閉じ、新しい周回から再開しています。');
   }
 
   lines.push('');
@@ -369,9 +429,7 @@ export function run(env = process.env) {
 
   writeArtifacts(applied.state, applied.view, { share, shareView: applied.shareView });
 
-  const readme = readFileSync(PATHS.readme, 'utf8');
-  const block = buildBoardBlock(applied.state, applied.view, repo);
-  writeFileSync(PATHS.readme, replaceBoardBlock(readme, block));
+  refreshReadmes(applied.state, applied.view, repo);
 
   const summary = applied.collapseEntry
     ? `collapse at ${applied.collapseEntry.height}px by @${user}`

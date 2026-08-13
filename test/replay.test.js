@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { replay, createWorld } from '../src/sim.js';
 import { renderBoard, renderShare, buildView, escapeXml } from '../src/render.js';
-import { applyPlay, replaceBoardBlock, buildBoardBlock, defaultState, MARKER_START, MARKER_END } from '../src/main.js';
+import {
+  applyPlay, replaceBoardBlock, buildBoardBlock, defaultState,
+  MARKER_START, MARKER_END, README_TARGETS, LANGUAGES,
+} from '../src/main.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const golden = JSON.parse(readFileSync(join(HERE, 'fixtures', 'replay-golden.json'), 'utf8'));
@@ -206,6 +209,62 @@ test('the board image reference carries a cache-busting query', () => {
   const view = buildView(state, createWorld(), 0, null);
   const block = buildBoardBlock(state, view, 'taross-f/taross-f');
   assert.match(block, /assets\/board\.svg\?v=1-3/);
+});
+
+test('every shipped README carries the markers and a language switcher', () => {
+  const root = join(HERE, '..');
+  for (const { path: file, lang } of README_TARGETS) {
+    const name = file.slice(root.length + 1);
+    assert.ok(existsSync(file), `${name} should exist`);
+
+    const text = readFileSync(file, 'utf8');
+    assert.ok(text.includes(MARKER_START) && text.includes(MARKER_END),
+      `${name} must keep the board markers or the workflow cannot update it`);
+
+    // Each README links to the other, so a reader can always switch.
+    const other = README_TARGETS.find((t) => t.lang !== lang);
+    const otherName = other.path.slice(root.length + 1);
+    assert.ok(text.includes(`(${otherName})`),
+      `${name} must link to ${otherName}`);
+  }
+});
+
+test('the board block is rendered in the language of each README', () => {
+  const state = { ...defaultState(), round: 2, actions: [{ issue: 1, user: 'a', x: 240 }] };
+  state.hallOfFame = [
+    { round: 1, height: 90, blocks: 5, collapsedBy: 'alice', at: '2026-01-01T00:00:00Z' },
+  ];
+  const view = buildView(state, createWorld(), 0, {
+    round: 1, height: 90, blocks: 5, collapsedBy: 'alice', at: '2026-01-01T00:00:00Z',
+  });
+
+  const en = buildBoardBlock(state, view, 'taross-f/taross-f', 'en');
+  const ja = buildBoardBlock(state, view, 'taross-f/taross-f', 'ja');
+
+  assert.notEqual(en, ja, 'the two languages should not render identically');
+  assert.match(en, /Drop a block/);
+  assert.match(en, /Hall of fame/);
+  assert.match(en, /\| Round \| Height \| Blocks \| Best ever \|/);
+  assert.ok(!/[ぁ-んァ-ン一-龯]/.test(en), 'the English block should carry no Japanese text');
+
+  assert.match(ja, /1手打つ/);
+  assert.match(ja, /殿堂入り/);
+
+  // Both must stay factually identical: same numbers, same image, same links.
+  for (const block of [en, ja]) {
+    assert.match(block, /assets\/board\.svg\?v=1-2/);
+    assert.match(block, /\| 2 \| 0 px \| 0 \| 90 px \|/);
+    assert.match(block, /@alice/);
+  }
+});
+
+test('an unknown language is rejected rather than silently falling back', () => {
+  const view = buildView(defaultState(), createWorld(), 0, null);
+  assert.throws(() => buildBoardBlock(defaultState(), view, 'o/r', 'fr'), /language/);
+});
+
+test('LANGUAGES matches the configured README targets', () => {
+  assert.deepEqual([...LANGUAGES].sort(), README_TARGETS.map((t) => t.lang).sort());
 });
 
 test('a hostile display name cannot break out of the README table', () => {

@@ -1,20 +1,20 @@
-name: 🧱 ブロックを落とす / Drop a block
-description: x 座標をひとつ選んでタワーにブロックを積みます
+name: 🧱 Drop a block / ブロックを落とす
+description: Pick an x coordinate and stack a block onto the shared tower
 title: 'drop: '
 labels: ['play']
 body:
   - type: markdown
     attributes:
       value: |
+        The platform spans x = 140 to 340. Enter one integer in that range.
+        Your block's size and tilt are derived from the issue number, so you do not get to choose them.
+
         土台は x = 140 から 340 までの 200px です。この範囲の整数をひとつだけ入力してください。
         ブロックの大きさと傾きは Issue 番号から決まるので、選ぶことはできません。
-
-        The platform spans x = 140 to 340. Enter one integer in that range.
-        Your block's size and tilt are derived from the issue number.
   - type: input
     id: x
     attributes:
-      label: 投下する x 座標
+      label: x coordinate to drop at
       placeholder: '240'
     validations:
       required: true
