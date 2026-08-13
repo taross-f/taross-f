@@ -4,13 +4,13 @@
 崩したら記録を残して次の周回へ。**Open an issue with one number — that is the whole game.**
 
 <!-- BOARD:START -->
-[![Tower board](assets/board.svg?v=10-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
+[![Tower board](assets/board.svg?v=11-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
 
 **[▶ 1手打つ / Drop a block](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — x 座標 (140–340) を書いて issue を立てるだけ。
 
 | Round | Height | Blocks | Best ever |
 |---:|---:|---:|---:|
-| 1 | 120 px | 10 | 120 px |
+| 1 | 106 px | 11 | 106 px |
 <!-- BOARD:END -->
 
 ## 遊び方 / How to play
