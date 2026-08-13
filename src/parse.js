@@ -60,33 +60,32 @@ export function extractInteger(body) {
 
 const REPLY = {
   noInteger: [
-    '座標を読み取れませんでした。',
+    'No coordinate found in this issue.',
     '',
-    `本文に落としたい x 座標を **${X_MIN} から ${X_MAX} までの整数** で 1 つだけ書いてください。`,
+    `Open a new one with a single **integer between ${X_MIN} and ${X_MAX}** in the body.`,
     '',
-    'Could not find a coordinate in this issue. Open a new one with a single '
-      + `integer between ${X_MIN} and ${X_MAX}.`,
+    `座標を読み取れませんでした。本文に **${X_MIN} 〜 ${X_MAX} の整数** を 1 つだけ書いてください。`,
   ].join('\n'),
 };
 
 function outOfRangeReply(value) {
   return [
-    `\`${value}\` は範囲外です。`,
+    `\`${value}\` is off the platform.`,
     '',
-    `有効な範囲は **${X_MIN} 〜 ${X_MAX}** です。土台はこの範囲にしかありません。`,
+    `The valid range is **${X_MIN} to ${X_MAX}** — there is no ground outside it.`,
     '',
-    `\`${value}\` is outside the platform. Valid range is ${X_MIN} to ${X_MAX}.`,
+    `\`${value}\` は範囲外です。有効な範囲は ${X_MIN} 〜 ${X_MAX} です。`,
   ].join('\n');
 }
 
 function rateLimitedReply(retryAtMs) {
   const when = formatUtc(retryAtMs);
   return [
-    '連投はできません。',
+    'One drop per player every 10 minutes.',
     '',
-    `次に打てるのは **${when}** からです。`,
+    `You can play again at **${when}**.`,
     '',
-    `One drop per player every 10 minutes. You can play again at ${when}.`,
+    `連投はできません。次に打てるのは ${when} からです。`,
   ].join('\n');
 }
 
