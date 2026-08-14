@@ -7,13 +7,13 @@ the board below. Knock the tower over and its score goes to the hall of fame, th
 starts from an empty platform.
 
 <!-- BOARD:START -->
-[![Tower board](assets/board.svg?v=11-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
+[![Tower board](assets/board.svg?v=12-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
 
 **[▶ Drop a block](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — open an issue with one integer between 140 and 340. That is the whole game.
 
 | Round | Height | Blocks | Best ever |
 |---:|---:|---:|---:|
-| 1 | 106 px | 11 | 106 px |
+| 1 | 92 px | 12 | 92 px |
 <!-- BOARD:END -->
 
 ## How to play
