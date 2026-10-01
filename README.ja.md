@@ -6,13 +6,13 @@
 崩したらその周回のスコアが殿堂入りし、次の周回が空の土台から始まります。
 
 <!-- BOARD:START -->
-[![タワーの盤面](assets/board.svg?v=12-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
+[![タワーの盤面](assets/board.svg?v=13-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
 
 **[▶ 1手打つ](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — x 座標 (140–340) を書いて issue を立てるだけ。
 
 | 周回 | 高さ | ブロック | 最高記録 |
 |---:|---:|---:|---:|
-| 1 | 92 px | 12 | 92 px |
+| 1 | 97 px | 13 | 97 px |
 <!-- BOARD:END -->
 
 ## 遊び方
