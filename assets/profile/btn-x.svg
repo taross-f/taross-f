@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 44" width="170" height="44" role="img" aria-labelledby="title desc">
+  <title id="title">X: @taross__f</title>
+  <desc id="desc">X: @taross__f</desc>
+  <style>
+    .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect x="0.5" y="0.5" width="169" height="43" rx="22" fill="#131c2c" stroke="#22304d"/>
+  <g transform="translate(24 12) scale(0.84)" fill="#e8eef9"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></g>
+  <text class="sans" x="54" y="28" font-size="15" font-weight="600" fill="#e8eef9">@taross__f</text>
+</svg>
