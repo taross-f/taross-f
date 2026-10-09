@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/profile/header.svg" alt="Taro Furuya — Executive Officer at PKSHA Communication, leading software engineering for AI SaaS products" width="100%">
+  <img src="assets/profile/header.svg" alt="Taro Furuya — Engineering Manager and Forward Deployed Engineer at PKSHA Technology, previously Executive Officer for AI SaaS engineering" width="100%">
 </p>
 
 <p align="center">
@@ -16,16 +16,13 @@
 
 ## 👋 About me
 
-- 🏢 Executive Officer at **PKSHA Communication**, leading software engineering across its AI SaaS products
+- 🏢 Engineering Manager and Forward Deployed Engineer (FDE) at **PKSHA Technology**
+- 🪜 Previously Executive Officer at PKSHA Communication, leading software engineering across its AI SaaS products. PKSHA Communication and PKSHA Workplace were merged into PKSHA Technology in July 2025
 - 🛤️ In software since 2009 — systems integration → mobile games → IoT & edge AI → AI SaaS, as an engineer, lead engineer and engineering manager
 - 🎤 Spoke about building generative AI into SaaS at [Microsoft Build 2023](https://speakerdeck.com/pkshadeck/azure-openai-servicewohuo-yong-sita-ai-saaspurodakutokai-fa-noshi-jian) and [SaaS on AWS 2023](https://speakerdeck.com/pkshadeck/saasniokerusheng-cheng-ai-noshi-zhuang-tosonowei-lai)
 - 🤖 Hands-on with agentic development: Claude Code, Codex, Cursor and Devin
 - 🏡 Based in Saitama, Japan. Father of three
 - ✍️ Writing (in Japanese) at [blog.taross-f.dev](https://blog.taross-f.dev/)
-
-<p align="center">
-  <img src="assets/profile/highlights.svg" alt="3,000+ edge-AI devices running image recognition · −50% DWH query time after a warehouse redesign · a top-30 grossing iOS game shipped · in software since 2009" width="100%">
-</p>
 
 ## 🧱 Shared Tower — open an issue. There is no other setup.
 
@@ -63,7 +60,7 @@ The **first integer** in the body wins, so `250`, `x=250` and `２５０` all me
 ## 🚀 Career
 
 <p align="center">
-  <img src="assets/profile/career.svg" alt="Career: Executive Officer at PKSHA Communication (2024.12–present), Engineering Manager at PKSHA Workplace (2021.09–2024.11), Lead Engineer at TVISION INSIGHTS (2018.08–2023.12), Engineering Manager at gloops (2012.04–2018.07), Engineer at Sobal (2009.04–2012.03)" width="100%">
+  <img src="assets/profile/career.svg" alt="Career: PKSHA Technology (2021.09–present) — now Engineering Manager and Forward Deployed Engineer, previously Executive Officer at PKSHA Communication (from 2024.12) and Engineering Manager at PKSHA Workplace (from 2021.09); Lead Engineer at REVISIO, formerly TVISION INSIGHTS (2018.08–2023.12), Engineering Manager at gloops (2012.04–2018.07), Engineer at Sobal (2009.04–2012.03)" width="100%">
 </p>
 
 ## ⚡ Tech stack
