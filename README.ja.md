@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/profile/header.svg" alt="古屋 太郎 — PKSHA Communication 執行役員。AI SaaS プロダクト開発の SWE 全体を統括" width="100%">
+  <img src="assets/profile/header.svg" alt="古屋 太郎 — PKSHA Technology のエンジニアリングマネージャー兼 FDE。元 執行役員" width="100%">
 </p>
 
 <p align="center">
@@ -16,7 +16,8 @@
 
 ## 👋 自己紹介
 
-- 🏢 **PKSHA Communication** 執行役員。AI SaaS プロダクト開発の SWE 全体を統括しています
+- 🏢 **PKSHA Technology** でエンジニアリングマネージャー兼 FDE (Forward Deployed Engineer)
+- 🪜 以前は PKSHA Communication の執行役員として AI SaaS プロダクト開発の SWE 全体を統括。PKSHA Communication と PKSHA Workplace は 2025 年 7 月に PKSHA Technology に吸収合併されました
 - 🛤️ 2009 年から SI → ソーシャルゲーム → IoT・エッジ AI → AI SaaS と渡り歩き、エンジニア・リードエンジニア・エンジニアリングマネージャーを経験
 - 🎤 [Microsoft Build 2023](https://speakerdeck.com/pkshadeck/azure-openai-servicewohuo-yong-sita-ai-saaspurodakutokai-fa-noshi-jian) と [SaaS on AWS 2023](https://speakerdeck.com/pkshadeck/saasniokerusheng-cheng-ai-noshi-zhuang-tosonowei-lai) で SaaS への生成 AI の組み込みについて登壇
 - 🤖 Claude Code・Codex・Cursor・Devin を使った AI エージェント開発にも取り組んでいます
@@ -24,7 +25,7 @@
 - ✍️ ブログ: [blog.taross-f.dev](https://blog.taross-f.dev/)
 
 <p align="center">
-  <img src="assets/profile/highlights.svg" alt="エッジ AI 画像認識を 3,000 台以上に展開 · DWH 再設計でクエリ時間 50% 短縮 · iOS 売上ランキング 30 位以内のゲームをリリース · 2009 年からソフトウェア開発" width="100%">
+  <img src="assets/profile/highlights.svg" alt="エッジ AI 画像認識を 3,000 台以上に展開 · DWH 再設計でクエリ時間 50% 短縮 · 2009 年からソフトウェア開発" width="100%">
 </p>
 
 ## 🧱 Shared Tower — Issue を立てるだけ。それ以外の準備は不要。
@@ -62,7 +63,7 @@
 ## 🚀 経歴
 
 <p align="center">
-  <img src="assets/profile/career.svg" alt="経歴: PKSHA Communication 執行役員 (2024.12–現在)、PKSHA Workplace エンジニアリングマネージャー (2021.09–2024.11)、TVISION INSIGHTS リードエンジニア (2018.08–2023.12)、gloops エンジニアリングマネージャー (2012.04–2018.07)、ソーバル エンジニア (2009.04–2012.03)" width="100%">
+  <img src="assets/profile/career.svg" alt="経歴: PKSHA Technology (2021.09–現在) — 現在はエンジニアリングマネージャー兼 FDE。以前は PKSHA Communication 執行役員 (2024.12〜)、PKSHA Workplace エンジニアリングマネージャー (2021.09〜)。REVISIO (旧 TVISION INSIGHTS) リードエンジニア (2018.08–2023.12)、gloops エンジニアリングマネージャー (2012.04–2018.07)、ソーバル エンジニア (2009.04–2012.03)" width="100%">
 </p>
 
 ## ⚡ 技術スタック

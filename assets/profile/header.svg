@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 280" width="960" height="280" role="img" aria-labelledby="title desc">
   <title id="title">Taro Furuya</title>
-  <desc id="desc">Executive Officer at PKSHA Communication, leading software engineering for AI SaaS products. Based in Saitama, Japan.</desc>
+  <desc id="desc">Engineering Manager and Forward Deployed Engineer at PKSHA Technology. Previously Executive Officer at PKSHA Communication, leading software engineering for AI SaaS products. Based in Saitama, Japan.</desc>
   <style>
     .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
@@ -38,10 +38,10 @@
     <rect class="bar" x="56" y="146" width="72" height="4" rx="2" fill="#ffd166"/>
     <text class="sans up" x="56" y="180" font-size="16" fill="#8fa2c4" style="animation-delay:0.20s">古屋 太郎  ·  Saitama, Japan</text>
     <g class="up" style="animation-delay:0.30s">
-      <rect x="56" y="198" width="362" height="32" rx="16" fill="#ffd166" fill-opacity="0.1" stroke="#ffd166" stroke-opacity="0.55"/>
-      <text class="mono" x="72" y="219" font-size="14" fill="#ffd166">Executive Officer @ PKSHA Communication</text>
+      <rect x="56" y="198" width="404" height="32" rx="16" fill="#ffd166" fill-opacity="0.1" stroke="#ffd166" stroke-opacity="0.55"/>
+      <text class="mono" x="72" y="219" font-size="14" fill="#ffd166">Engineering Manager &amp; FDE @ PKSHA Technology</text>
     </g>
-    <text class="sans up" x="56" y="258" font-size="16" fill="#c5d1e6" style="animation-delay:0.40s">Leading software engineering for AI SaaS products.</text>
+    <text class="sans up" x="56" y="258" font-size="16" fill="#c5d1e6" style="animation-delay:0.40s">Previously Executive Officer for AI SaaS engineering.</text>
 
     <rect x="640" y="240" width="240" height="9" fill="#31405f"/>
     <line x1="640" y1="240" x2="880" y2="240" stroke="#5a729e" stroke-width="2"/>
