@@ -24,10 +24,6 @@
 - 🏡 埼玉県在住、3 児の父
 - ✍️ ブログ: [blog.taross-f.dev](https://blog.taross-f.dev/)
 
-<p align="center">
-  <img src="assets/profile/highlights.svg" alt="エッジ AI 画像認識を 3,000 台以上に展開 · DWH 再設計でクエリ時間 50% 短縮 · 2009 年からソフトウェア開発" width="100%">
-</p>
-
 ## 🧱 Shared Tower — Issue を立てるだけ。それ以外の準備は不要。
 
 みんなで 1 本のタワーを積み上げます。Issue に x 座標をひとつ書くと、下の盤面にブロックが 1 個落ちてきます。

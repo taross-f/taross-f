@@ -24,10 +24,6 @@
 - 🏡 Based in Saitama, Japan. Father of three
 - ✍️ Writing (in Japanese) at [blog.taross-f.dev](https://blog.taross-f.dev/)
 
-<p align="center">
-  <img src="assets/profile/highlights.svg" alt="3,000+ edge-AI devices running image recognition · −50% DWH query time after a warehouse redesign · in software since 2009" width="100%">
-</p>
-
 ## 🧱 Shared Tower — open an issue. There is no other setup.
 
 Everyone stacks onto one shared tower. Put a single x coordinate in an issue and a block drops onto

@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 693" width="960" height="693" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 672" width="960" height="672" role="img" aria-labelledby="title desc">
   <title id="title">Career</title>
-  <desc id="desc">2021.09 to present: Engineering Manager · FDE at PKSHA Technology. now: Engineering Manager &amp; Forward Deployed Engineer. 2024.12: Executive Officer at PKSHA Communication, led AI SaaS engineering. 2021.09: Engineering Manager at PKSHA Workplace, AI helpdesk for large enterprises. PKSHA Communication and PKSHA Workplace were merged into PKSHA Technology in July 2025. 2018.08 to 2023.12: Lead Engineer at REVISIO (formerly TVISION INSIGHTS). IoT and image processing. Rolled out edge-AI image recognition to 3,000+ devices, and redesigned the data warehouse to cut query time by 50%.  2012.04 to 2018.07: Engineering Manager at gloops. Social and native mobile games: development, operations and team management.  2009.04 to 2012.03: Engineer at Sobal. Started out in systems integration. </desc>
+  <desc id="desc">2021.09 to present: Engineering Manager · FDE at PKSHA Technology. now: Engineering Manager &amp; Forward Deployed Engineer. 2024.12: Executive Officer at PKSHA Communication, led AI SaaS engineering. 2021.09: Engineering Manager at PKSHA Workplace, AI helpdesk for large enterprises. PKSHA Communication and PKSHA Workplace were merged into PKSHA Technology in July 2025. 2018.08 to 2023.12: Lead Engineer at REVISIO (formerly TVISION INSIGHTS). Developed IoT and image processing systems.  2012.04 to 2018.07: Engineering Manager at gloops. Social and native mobile games: development, operations and team management.  2009.04 to 2012.03: Engineer at Sobal. Started out in systems integration. </desc>
   <style>
     .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
@@ -19,8 +19,8 @@
       <stop offset="1" stop-color="#7cb8ff"/>
     </linearGradient>
   </defs>
-  <rect x="0.5" y="0.5" width="959" height="692" rx="18" fill="#0d1420" stroke="#22304d"/>
-  <rect class="rail" x="144.5" y="70" width="3" height="549" rx="1.5" fill="url(#rail)" opacity="0.6"/>
+  <rect x="0.5" y="0.5" width="959" height="671" rx="18" fill="#0d1420" stroke="#22304d"/>
+  <rect class="rail" x="144.5" y="70" width="3" height="528" rx="1.5" fill="url(#rail)" opacity="0.6"/>
   <g class="up" style="animation-delay:0.10s">
     <text class="mono" x="124" y="75" font-size="13" text-anchor="end" fill="#e8eef9">2021.09</text>
     <text class="mono" x="124" y="94" font-size="12" text-anchor="end" fill="#ffd166">present</text>
@@ -42,43 +42,42 @@
     <text class="mono" x="124" y="299" font-size="13" text-anchor="end" fill="#e8eef9">2018.08</text>
     <text class="mono" x="124" y="318" font-size="12" text-anchor="end" fill="#8fa2c4">→ 2023.12</text>
     <line x1="154" y1="294" x2="176" y2="294" stroke="#22304d" stroke-width="2"/>
-    <rect x="176.5" y="244.5" width="763" height="158" rx="12" fill="#131c2c" stroke="#22304d"/>
-    <rect x="176.5" y="260" width="4" height="127" rx="2" fill="#5fd4c4"/>
+    <rect x="176.5" y="244.5" width="763" height="137" rx="12" fill="#131c2c" stroke="#22304d"/>
+    <rect x="176.5" y="260" width="4" height="106" rx="2" fill="#5fd4c4"/>
     <text class="mono" x="200" y="274" font-size="12" letter-spacing="1.5" fill="#5fd4c4">LEAD ENGINEER</text>
     <text class="sans" x="200" y="301" font-size="21" font-weight="700" fill="#e8eef9">REVISIO<tspan font-size="14" font-weight="400" fill="#8fa2c4" dx="10">formerly TVISION INSIGHTS</tspan></text>
-    <text class="sans" x="200" y="326" font-size="14.5" fill="#c5d1e6">IoT and image processing. Rolled out edge-AI image recognition to 3,000+ devices,</text>
-    <text class="sans" x="200" y="347" font-size="14.5" fill="#c5d1e6">and redesigned the data warehouse to cut query time by 50%.</text>
-      <rect x="200" y="363" width="63.2" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="231.6" y="378" font-size="12" text-anchor="middle" fill="#c5d1e6">Python</text>
-      <rect x="271.2" y="363" width="63.2" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="302.8" y="378" font-size="12" text-anchor="middle" fill="#c5d1e6">Django</text>
-      <rect x="342.4" y="363" width="70.4" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="377.59999999999997" y="378" font-size="12" text-anchor="middle" fill="#c5d1e6">Angular</text>
-      <rect x="420.79999999999995" y="363" width="41.6" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="441.59999999999997" y="378" font-size="12" text-anchor="middle" fill="#c5d1e6">AWS</text>
+    <text class="sans" x="200" y="326" font-size="14.5" fill="#c5d1e6">Developed IoT and image processing systems.</text>
+      <rect x="200" y="342" width="63.2" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="231.6" y="357" font-size="12" text-anchor="middle" fill="#c5d1e6">Python</text>
+      <rect x="271.2" y="342" width="63.2" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="302.8" y="357" font-size="12" text-anchor="middle" fill="#c5d1e6">Django</text>
+      <rect x="342.4" y="342" width="70.4" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="377.59999999999997" y="357" font-size="12" text-anchor="middle" fill="#c5d1e6">Angular</text>
+      <rect x="420.79999999999995" y="342" width="41.6" height="22" rx="11" fill="#5fd4c4" fill-opacity="0.1" stroke="#5fd4c4" stroke-opacity="0.4"/><text class="mono" x="441.59999999999997" y="357" font-size="12" text-anchor="middle" fill="#c5d1e6">AWS</text>
   </g>
   <g class="up" style="animation-delay:0.34s">
-    <text class="mono" x="124" y="472" font-size="13" text-anchor="end" fill="#e8eef9">2012.04</text>
-    <text class="mono" x="124" y="491" font-size="12" text-anchor="end" fill="#8fa2c4">→ 2018.07</text>
-    <line x1="154" y1="467" x2="176" y2="467" stroke="#22304d" stroke-width="2"/>
-    <rect x="176.5" y="417.5" width="763" height="137" rx="12" fill="#131c2c" stroke="#22304d"/>
-    <rect x="176.5" y="433" width="4" height="106" rx="2" fill="#ff8a7a"/>
-    <text class="mono" x="200" y="447" font-size="12" letter-spacing="1.5" fill="#ff8a7a">ENGINEERING MANAGER</text>
-    <text class="sans" x="200" y="474" font-size="21" font-weight="700" fill="#e8eef9">gloops</text>
-    <text class="sans" x="200" y="499" font-size="14.5" fill="#c5d1e6">Social and native mobile games: development, operations and team management.</text>
-      <rect x="200" y="515" width="34.4" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="217.2" y="530" font-size="12" text-anchor="middle" fill="#c5d1e6">C#</text>
-      <rect x="242.4" y="515" width="56" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="270.4" y="530" font-size="12" text-anchor="middle" fill="#c5d1e6">Unity</text>
-      <rect x="306.4" y="515" width="41.6" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="327.2" y="530" font-size="12" text-anchor="middle" fill="#c5d1e6">AWS</text>
+    <text class="mono" x="124" y="451" font-size="13" text-anchor="end" fill="#e8eef9">2012.04</text>
+    <text class="mono" x="124" y="470" font-size="12" text-anchor="end" fill="#8fa2c4">→ 2018.07</text>
+    <line x1="154" y1="446" x2="176" y2="446" stroke="#22304d" stroke-width="2"/>
+    <rect x="176.5" y="396.5" width="763" height="137" rx="12" fill="#131c2c" stroke="#22304d"/>
+    <rect x="176.5" y="412" width="4" height="106" rx="2" fill="#ff8a7a"/>
+    <text class="mono" x="200" y="426" font-size="12" letter-spacing="1.5" fill="#ff8a7a">ENGINEERING MANAGER</text>
+    <text class="sans" x="200" y="453" font-size="21" font-weight="700" fill="#e8eef9">gloops</text>
+    <text class="sans" x="200" y="478" font-size="14.5" fill="#c5d1e6">Social and native mobile games: development, operations and team management.</text>
+      <rect x="200" y="494" width="34.4" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="217.2" y="509" font-size="12" text-anchor="middle" fill="#c5d1e6">C#</text>
+      <rect x="242.4" y="494" width="56" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="270.4" y="509" font-size="12" text-anchor="middle" fill="#c5d1e6">Unity</text>
+      <rect x="306.4" y="494" width="41.6" height="22" rx="11" fill="#ff8a7a" fill-opacity="0.1" stroke="#ff8a7a" stroke-opacity="0.4"/><text class="mono" x="327.2" y="509" font-size="12" text-anchor="middle" fill="#c5d1e6">AWS</text>
   </g>
   <g class="up" style="animation-delay:0.46s">
-    <text class="mono" x="124" y="624" font-size="13" text-anchor="end" fill="#e8eef9">2009.04</text>
-    <text class="mono" x="124" y="643" font-size="12" text-anchor="end" fill="#8fa2c4">→ 2012.03</text>
-    <line x1="154" y1="619" x2="176" y2="619" stroke="#22304d" stroke-width="2"/>
-    <rect x="176.5" y="569.5" width="763" height="103" rx="12" fill="#131c2c" stroke="#22304d"/>
-    <rect x="176.5" y="585" width="4" height="72" rx="2" fill="#7cb8ff"/>
-    <text class="mono" x="200" y="599" font-size="12" letter-spacing="1.5" fill="#7cb8ff">ENGINEER</text>
-    <text class="sans" x="200" y="626" font-size="21" font-weight="700" fill="#e8eef9">Sobal</text>
-    <text class="sans" x="200" y="651" font-size="14.5" fill="#c5d1e6">Started out in systems integration.</text>
+    <text class="mono" x="124" y="603" font-size="13" text-anchor="end" fill="#e8eef9">2009.04</text>
+    <text class="mono" x="124" y="622" font-size="12" text-anchor="end" fill="#8fa2c4">→ 2012.03</text>
+    <line x1="154" y1="598" x2="176" y2="598" stroke="#22304d" stroke-width="2"/>
+    <rect x="176.5" y="548.5" width="763" height="103" rx="12" fill="#131c2c" stroke="#22304d"/>
+    <rect x="176.5" y="564" width="4" height="72" rx="2" fill="#7cb8ff"/>
+    <text class="mono" x="200" y="578" font-size="12" letter-spacing="1.5" fill="#7cb8ff">ENGINEER</text>
+    <text class="sans" x="200" y="605" font-size="21" font-weight="700" fill="#e8eef9">Sobal</text>
+    <text class="sans" x="200" y="630" font-size="14.5" fill="#c5d1e6">Started out in systems integration.</text>
   </g>
   <circle class="pulse" cx="146" cy="70" r="8" fill="none" stroke="#ffd166" stroke-width="2"/>
   <circle cx="146" cy="70" r="7" fill="#ffd166"/>
   <circle cx="146" cy="294" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"/>
-  <circle cx="146" cy="467" r="6" fill="#0d1420" stroke="#ff8a7a" stroke-width="3"/>
-  <circle cx="146" cy="619" r="6" fill="#0d1420" stroke="#7cb8ff" stroke-width="3"/>
+  <circle cx="146" cy="446" r="6" fill="#0d1420" stroke="#ff8a7a" stroke-width="3"/>
+  <circle cx="146" cy="598" r="6" fill="#0d1420" stroke="#7cb8ff" stroke-width="3"/>
 </svg>
