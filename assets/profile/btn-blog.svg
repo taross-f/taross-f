@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 44" width="230" height="44" role="img" aria-labelledby="title desc">
+  <title id="title">Blog: blog.taross-f.dev</title>
+  <desc id="desc">Blog: blog.taross-f.dev</desc>
+  <style>
+    .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect x="0.5" y="0.5" width="229" height="43" rx="22" fill="#131c2c" stroke="#22304d"/>
+  <g transform="translate(24 12) scale(0.84)" fill="#ffd166"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></g>
+  <text class="sans" x="54" y="28" font-size="15" font-weight="600" fill="#e8eef9">blog.taross-f.dev</text>
+</svg>

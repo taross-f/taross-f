@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 242" width="960" height="242" role="img" aria-labelledby="title desc">
+  <title id="title">Tech stack</title>
+  <desc id="desc">Backend: Python, Go, gRPC, Django, FastAPI. Frontend: React, Angular, TypeScript, Redux. Cloud &amp; Infra: AWS, Microsoft Azure, Terraform, Docker. AI &amp; Data: AI SaaS, Edge AI inference, ETL, DWH. Agentic Dev: Claude Code, Codex, Cursor, Devin.</desc>
+  <style>
+    .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+    .up { animation: up .7s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <g class="up" style="animation-delay:0.08s">
+    <rect x="0.5" y="0.5" width="179.8" height="241" rx="14" fill="#131c2c" stroke="#22304d"/>
+    <g transform="translate(26 32)"><rect x="-11" y="-7" width="22" height="14" rx="3" fill="#7cb8ff" stroke="#2a5590" stroke-width="1.2"/><rect x="-10" y="-6" width="20" height="4" rx="2" fill="#ffffff" opacity="0.22"/></g>
+    <text class="sans" x="46" y="38" font-size="16" font-weight="700" fill="#e8eef9">Backend</text>
+    <rect x="12" y="62" width="156.8" height="26" rx="7" fill="#7cb8ff" fill-opacity="0.08" stroke="#7cb8ff" stroke-opacity="0.28"/><rect x="22" y="72" width="6" height="6" rx="1.5" fill="#7cb8ff"/><text class="sans" x="36" y="80" font-size="13.5" fill="#c5d1e6">Python</text>
+    <rect x="12" y="96" width="156.8" height="26" rx="7" fill="#7cb8ff" fill-opacity="0.08" stroke="#7cb8ff" stroke-opacity="0.28"/><rect x="22" y="106" width="6" height="6" rx="1.5" fill="#7cb8ff"/><text class="sans" x="36" y="114" font-size="13.5" fill="#c5d1e6">Go</text>
+    <rect x="12" y="130" width="156.8" height="26" rx="7" fill="#7cb8ff" fill-opacity="0.08" stroke="#7cb8ff" stroke-opacity="0.28"/><rect x="22" y="140" width="6" height="6" rx="1.5" fill="#7cb8ff"/><text class="sans" x="36" y="148" font-size="13.5" fill="#c5d1e6">gRPC</text>
+    <rect x="12" y="164" width="156.8" height="26" rx="7" fill="#7cb8ff" fill-opacity="0.08" stroke="#7cb8ff" stroke-opacity="0.28"/><rect x="22" y="174" width="6" height="6" rx="1.5" fill="#7cb8ff"/><text class="sans" x="36" y="182" font-size="13.5" fill="#c5d1e6">Django</text>
+    <rect x="12" y="198" width="156.8" height="26" rx="7" fill="#7cb8ff" fill-opacity="0.08" stroke="#7cb8ff" stroke-opacity="0.28"/><rect x="22" y="208" width="6" height="6" rx="1.5" fill="#7cb8ff"/><text class="sans" x="36" y="216" font-size="13.5" fill="#c5d1e6">FastAPI</text>
+  </g>
+  <g class="up" style="animation-delay:0.18s">
+    <rect x="195.3" y="0.5" width="179.8" height="241" rx="14" fill="#131c2c" stroke="#22304d"/>
+    <g transform="translate(220.8 32)"><rect x="-11" y="-7" width="22" height="14" rx="3" fill="#5fd4c4" stroke="#1f6f66" stroke-width="1.2"/><rect x="-10" y="-6" width="20" height="4" rx="2" fill="#ffffff" opacity="0.22"/></g>
+    <text class="sans" x="240.8" y="38" font-size="16" font-weight="700" fill="#e8eef9">Frontend</text>
+    <rect x="206.8" y="62" width="156.8" height="26" rx="7" fill="#5fd4c4" fill-opacity="0.08" stroke="#5fd4c4" stroke-opacity="0.28"/><rect x="216.8" y="72" width="6" height="6" rx="1.5" fill="#5fd4c4"/><text class="sans" x="230.8" y="80" font-size="13.5" fill="#c5d1e6">React</text>
+    <rect x="206.8" y="96" width="156.8" height="26" rx="7" fill="#5fd4c4" fill-opacity="0.08" stroke="#5fd4c4" stroke-opacity="0.28"/><rect x="216.8" y="106" width="6" height="6" rx="1.5" fill="#5fd4c4"/><text class="sans" x="230.8" y="114" font-size="13.5" fill="#c5d1e6">Angular</text>
+    <rect x="206.8" y="130" width="156.8" height="26" rx="7" fill="#5fd4c4" fill-opacity="0.08" stroke="#5fd4c4" stroke-opacity="0.28"/><rect x="216.8" y="140" width="6" height="6" rx="1.5" fill="#5fd4c4"/><text class="sans" x="230.8" y="148" font-size="13.5" fill="#c5d1e6">TypeScript</text>
+    <rect x="206.8" y="164" width="156.8" height="26" rx="7" fill="#5fd4c4" fill-opacity="0.08" stroke="#5fd4c4" stroke-opacity="0.28"/><rect x="216.8" y="174" width="6" height="6" rx="1.5" fill="#5fd4c4"/><text class="sans" x="230.8" y="182" font-size="13.5" fill="#c5d1e6">Redux</text>
+  </g>
+  <g class="up" style="animation-delay:0.28s">
+    <rect x="390.1" y="0.5" width="179.8" height="241" rx="14" fill="#131c2c" stroke="#22304d"/>
+    <g transform="translate(415.6 32)"><rect x="-11" y="-7" width="22" height="14" rx="3" fill="#ffd166" stroke="#8a6a14" stroke-width="1.2"/><rect x="-10" y="-6" width="20" height="4" rx="2" fill="#ffffff" opacity="0.22"/></g>
+    <text class="sans" x="435.6" y="38" font-size="16" font-weight="700" fill="#e8eef9">Cloud &amp; Infra</text>
+    <rect x="401.6" y="62" width="156.8" height="26" rx="7" fill="#ffd166" fill-opacity="0.08" stroke="#ffd166" stroke-opacity="0.28"/><rect x="411.6" y="72" width="6" height="6" rx="1.5" fill="#ffd166"/><text class="sans" x="425.6" y="80" font-size="13.5" fill="#c5d1e6">AWS</text>
+    <rect x="401.6" y="96" width="156.8" height="26" rx="7" fill="#ffd166" fill-opacity="0.08" stroke="#ffd166" stroke-opacity="0.28"/><rect x="411.6" y="106" width="6" height="6" rx="1.5" fill="#ffd166"/><text class="sans" x="425.6" y="114" font-size="13.5" fill="#c5d1e6">Microsoft Azure</text>
+    <rect x="401.6" y="130" width="156.8" height="26" rx="7" fill="#ffd166" fill-opacity="0.08" stroke="#ffd166" stroke-opacity="0.28"/><rect x="411.6" y="140" width="6" height="6" rx="1.5" fill="#ffd166"/><text class="sans" x="425.6" y="148" font-size="13.5" fill="#c5d1e6">Terraform</text>
+    <rect x="401.6" y="164" width="156.8" height="26" rx="7" fill="#ffd166" fill-opacity="0.08" stroke="#ffd166" stroke-opacity="0.28"/><rect x="411.6" y="174" width="6" height="6" rx="1.5" fill="#ffd166"/><text class="sans" x="425.6" y="182" font-size="13.5" fill="#c5d1e6">Docker</text>
+  </g>
+  <g class="up" style="animation-delay:0.38s">
+    <rect x="584.9000000000001" y="0.5" width="179.8" height="241" rx="14" fill="#131c2c" stroke="#22304d"/>
+    <g transform="translate(610.4000000000001 32)"><rect x="-11" y="-7" width="22" height="14" rx="3" fill="#ff8a7a" stroke="#8c3a32" stroke-width="1.2"/><rect x="-10" y="-6" width="20" height="4" rx="2" fill="#ffffff" opacity="0.22"/></g>
+    <text class="sans" x="630.4000000000001" y="38" font-size="16" font-weight="700" fill="#e8eef9">AI &amp; Data</text>
+    <rect x="596.4000000000001" y="62" width="156.8" height="26" rx="7" fill="#ff8a7a" fill-opacity="0.08" stroke="#ff8a7a" stroke-opacity="0.28"/><rect x="606.4000000000001" y="72" width="6" height="6" rx="1.5" fill="#ff8a7a"/><text class="sans" x="620.4000000000001" y="80" font-size="13.5" fill="#c5d1e6">AI SaaS</text>
+    <rect x="596.4000000000001" y="96" width="156.8" height="26" rx="7" fill="#ff8a7a" fill-opacity="0.08" stroke="#ff8a7a" stroke-opacity="0.28"/><rect x="606.4000000000001" y="106" width="6" height="6" rx="1.5" fill="#ff8a7a"/><text class="sans" x="620.4000000000001" y="114" font-size="13.5" fill="#c5d1e6">Edge AI inference</text>
+    <rect x="596.4000000000001" y="130" width="156.8" height="26" rx="7" fill="#ff8a7a" fill-opacity="0.08" stroke="#ff8a7a" stroke-opacity="0.28"/><rect x="606.4000000000001" y="140" width="6" height="6" rx="1.5" fill="#ff8a7a"/><text class="sans" x="620.4000000000001" y="148" font-size="13.5" fill="#c5d1e6">ETL</text>
+    <rect x="596.4000000000001" y="164" width="156.8" height="26" rx="7" fill="#ff8a7a" fill-opacity="0.08" stroke="#ff8a7a" stroke-opacity="0.28"/><rect x="606.4000000000001" y="174" width="6" height="6" rx="1.5" fill="#ff8a7a"/><text class="sans" x="620.4000000000001" y="182" font-size="13.5" fill="#c5d1e6">DWH</text>
+  </g>
+  <g class="up" style="animation-delay:0.48s">
+    <rect x="779.7" y="0.5" width="179.8" height="241" rx="14" fill="#131c2c" stroke="#22304d"/>
+    <g transform="translate(805.2 32)"><rect x="-11" y="-7" width="22" height="14" rx="3" fill="#b39dfa" stroke="#4e3d8f" stroke-width="1.2"/><rect x="-10" y="-6" width="20" height="4" rx="2" fill="#ffffff" opacity="0.22"/></g>
+    <text class="sans" x="825.2" y="38" font-size="16" font-weight="700" fill="#e8eef9">Agentic Dev</text>
+    <rect x="791.2" y="62" width="156.8" height="26" rx="7" fill="#b39dfa" fill-opacity="0.08" stroke="#b39dfa" stroke-opacity="0.28"/><rect x="801.2" y="72" width="6" height="6" rx="1.5" fill="#b39dfa"/><text class="sans" x="815.2" y="80" font-size="13.5" fill="#c5d1e6">Claude Code</text>
+    <rect x="791.2" y="96" width="156.8" height="26" rx="7" fill="#b39dfa" fill-opacity="0.08" stroke="#b39dfa" stroke-opacity="0.28"/><rect x="801.2" y="106" width="6" height="6" rx="1.5" fill="#b39dfa"/><text class="sans" x="815.2" y="114" font-size="13.5" fill="#c5d1e6">Codex</text>
+    <rect x="791.2" y="130" width="156.8" height="26" rx="7" fill="#b39dfa" fill-opacity="0.08" stroke="#b39dfa" stroke-opacity="0.28"/><rect x="801.2" y="140" width="6" height="6" rx="1.5" fill="#b39dfa"/><text class="sans" x="815.2" y="148" font-size="13.5" fill="#c5d1e6">Cursor</text>
+    <rect x="791.2" y="164" width="156.8" height="26" rx="7" fill="#b39dfa" fill-opacity="0.08" stroke="#b39dfa" stroke-opacity="0.28"/><rect x="801.2" y="174" width="6" height="6" rx="1.5" fill="#b39dfa"/><text class="sans" x="815.2" y="182" font-size="13.5" fill="#c5d1e6">Devin</text>
+  </g>
+</svg>

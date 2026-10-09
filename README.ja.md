@@ -1,6 +1,33 @@
-# 🧱 Shared Tower — Issue を立てるだけ。それ以外の準備は不要。
+<p align="center">
+  <img src="assets/profile/header.svg" alt="古屋 太郎 — PKSHA Communication 執行役員。AI SaaS プロダクト開発の SWE 全体を統括" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://blog.taross-f.dev/"><img src="assets/profile/btn-blog.svg" alt="ブログ: blog.taross-f.dev" height="40"></a>
+  <a href="https://x.com/taross__f"><img src="assets/profile/btn-x.svg" alt="X: @taross__f" height="40"></a>
+  <a href="https://www.linkedin.com/in/taro-furuya"><img src="assets/profile/btn-linkedin.svg" alt="LinkedIn" height="40"></a>
+</p>
+
+<div align="center">
 
 [English](README.md) · **日本語**
+
+</div>
+
+## 👋 自己紹介
+
+- 🏢 **PKSHA Communication** 執行役員。AI SaaS プロダクト開発の SWE 全体を統括しています
+- 🛤️ 2009 年から SI → ソーシャルゲーム → IoT・エッジ AI → AI SaaS と渡り歩き、エンジニア・リードエンジニア・エンジニアリングマネージャーを経験
+- 🎤 [Microsoft Build 2023](https://speakerdeck.com/pkshadeck/azure-openai-servicewohuo-yong-sita-ai-saaspurodakutokai-fa-noshi-jian) と [SaaS on AWS 2023](https://speakerdeck.com/pkshadeck/saasniokerusheng-cheng-ai-noshi-zhuang-tosonowei-lai) で SaaS への生成 AI の組み込みについて登壇
+- 🤖 Claude Code・Codex・Cursor・Devin を使った AI エージェント開発にも取り組んでいます
+- 🏡 埼玉県在住、3 児の父
+- ✍️ ブログ: [blog.taross-f.dev](https://blog.taross-f.dev/)
+
+<p align="center">
+  <img src="assets/profile/highlights.svg" alt="エッジ AI 画像認識を 3,000 台以上に展開 · DWH 再設計でクエリ時間 50% 短縮 · iOS 売上ランキング 30 位以内のゲームをリリース · 2009 年からソフトウェア開発" width="100%">
+</p>
+
+## 🧱 Shared Tower — Issue を立てるだけ。それ以外の準備は不要。
 
 みんなで 1 本のタワーを積み上げます。Issue に x 座標をひとつ書くと、下の盤面にブロックが 1 個落ちてきます。
 崩したらその周回のスコアが殿堂入りし、次の周回が空の土台から始まります。
@@ -15,11 +42,11 @@
 | 1 | 97 px | 13 | 97 px |
 <!-- BOARD:END -->
 
-## 遊び方
+### 遊び方
 
 1. **[Issue を立てる](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — ラベル `play` は自動で付きます
 2. 本文に **140 〜 340 の整数** を 1 つだけ書く — これが投下する x 座標です
-3. 1 分ほどで GitHub Actions が物理シミュレーションを回し、盤面 SVG と README を更新して Issue に返信します
+3. 1 分ほどで GitHub Actions が物理シミュレーションを回し、盤面と README を更新して Issue に返信します
 
 | ルール | |
 |:--|:--|
@@ -30,28 +57,16 @@
 | 連投 | 同じ人は 10 分に 1 回まで |
 
 崩壊するとその周回のスコアが記録され、ブロックが片付けられて次の周回が始まります。
+本文は **最初に現れる整数** を拾うので、`250` も `x=250` も `２５０` もすべて同じ意味になります。
 
-一手として扱うかどうかを決めているのは **ラベル `play` だけ** です。タイトルは一切読んでいません。
-ラベルがない Issue は普通の Issue としてそのまま放置されます。本文は **最初に現れる整数** を拾うので、
-`250` も `x=250` も `２５０` もすべて同じ意味になります。
+## 🚀 経歴
 
-## 仕組み
+<p align="center">
+  <img src="assets/profile/career.svg" alt="経歴: PKSHA Communication 執行役員 (2024.12–現在)、PKSHA Workplace エンジニアリングマネージャー (2021.09–2024.11)、TVISION INSIGHTS リードエンジニア (2018.08–2023.12)、gloops エンジニアリングマネージャー (2012.04–2018.07)、ソーバル エンジニア (2009.04–2012.03)" width="100%">
+</p>
 
-外部サービスも DB も使っていません。状態は `state.json` の **行動ログだけ** で、盤面は毎回そのログを
-最初からリプレイして復元しています。
+## ⚡ 技術スタック
 
-| | |
-|:--|:--|
-| `src/rng.js` | 決定論 PRNG (xorshift32)。`Math.random()` は使いません |
-| `src/sim.js` | 固定ステップ (1/120s) の 2D 剛体シミュレータ。SAT + インパルスソルバ |
-| `src/render.js` | 盤面 → SVG。`<script>` なしの静止 1 枚 |
-| `src/parse.js` | Issue 本文 → 座標 or 却下理由 |
-| `src/main.js` | Actions から呼ばれる入口 |
-
-```sh
-npm test          # 決定論性・崩壊判定・リプレイ一致・SVG 健全性
-npm run demo      # 30手ぶん流して assets/demo/ に SVG を出力
-```
-
-同じ行動ログからは必ず同じ盤面が再現されます。シミュレータを変更するとリプレイも変わる — それを
-検出するためのゴールデンテストです。
+<p align="center">
+  <img src="assets/profile/stack.svg" alt="Backend: Python, Go, gRPC, Django, FastAPI · Frontend: React, Angular, TypeScript, Redux · Cloud &amp; Infra: AWS, Microsoft Azure, Terraform, Docker · AI &amp; Data: AI SaaS, エッジ AI 画像推論, ETL, DWH · AI エージェント開発: Claude Code, Codex, Cursor, Devin" width="100%">
+</p>
