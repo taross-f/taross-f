@@ -1,8 +1,8 @@
 {
-  "name": "taross-f-tower",
+  "name": "taross-f-dots",
   "version": "1.0.0",
   "private": true,
-  "description": "Issue-driven shared tower stacking game rendered into the profile README",
+  "description": "Issue-driven connecting-the-dots game rendered into the profile README",
   "type": "module",
   "engines": {
     "node": ">=20"

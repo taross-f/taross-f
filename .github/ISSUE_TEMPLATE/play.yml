@@ -1,20 +1,27 @@
-name: 🧱 Drop a block / ブロックを落とす
-description: Pick an x coordinate and stack a block onto the shared tower
-title: 'drop: '
+name: 🔵 Place a dot / 点を打つ
+description: Pick a point on the future grid and extend the line from now
+title: 'dot: '
 labels: ['play']
 body:
   - type: markdown
     attributes:
       value: |
-        The platform spans x = 140 to 340. Enter one integer in that range.
-        Your block's size and tilt are derived from the issue number, so you do not get to choose them.
+        Looking back, the dots connect. Where does the next one go?
+        The line is drawn from the previous dot to yours. If it touches the line already drawn, the dots have connected and the chapter is complete.
 
-        土台は x = 140 から 340 までの 200px です。この範囲の整数をひとつだけ入力してください。
-        ブロックの大きさと傾きは Issue 番号から決まるので、選ぶことはできません。
+        これまでの点はつながった。これからは点を打っていく — 次は、どこに打つ？
+        直前の点からあなたの点まで線が引かれます。それまでの線に触れたら、点がつながって章が完成します。
   - type: input
     id: x
     attributes:
-      label: x coordinate to drop at
-      placeholder: '240'
+      label: x (1–12, left to right)
+      placeholder: '7'
+    validations:
+      required: true
+  - type: input
+    id: y
+    attributes:
+      label: y (1–9, bottom to top)
+      placeholder: '3'
     validations:
       required: true

@@ -1,11 +1,195 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Tower game round 1: 1 blocks stacked, current height 25 pixels, best ever 25 pixels.">
-<rect x="0" y="0" width="1200" height="630" fill="#070c14"/>
-<text x="600" y="72" text-anchor="middle" font-family="monospace" font-size="30" fill="#8fa2c4">SHARED TOWER</text>
-<text x="600" y="126" text-anchor="middle" font-family="monospace" font-size="54" font-weight="bold" fill="#ffd166">25 px / 1 blocks</text>
-<clipPath id="board"><rect x="224" y="145" width="752" height="423" rx="6"/></clipPath>
-<g clip-path="url(#board)">
-<g transform="translate(224 145) scale(1.57)">
-<rect x="0" y="0" width="480" height="270" fill="#0d1420"/><line x1="0" y1="200" x2="480" y2="200" stroke="#1a2436" stroke-width="1"/><text x="6" y="196" font-family="monospace" font-size="8" fill="#1a2436">50</text><line x1="0" y1="150" x2="480" y2="150" stroke="#1a2436" stroke-width="1"/><text x="6" y="146" font-family="monospace" font-size="8" fill="#1a2436">100</text><line x1="0" y1="100" x2="480" y2="100" stroke="#1a2436" stroke-width="1"/><text x="6" y="96" font-family="monospace" font-size="8" fill="#1a2436">150</text><line x1="0" y1="50" x2="480" y2="50" stroke="#1a2436" stroke-width="1"/><text x="6" y="46" font-family="monospace" font-size="8" fill="#1a2436">200</text><rect x="0" y="250" width="480" height="20" fill="#131c2c"/><rect x="140" y="250" width="200" height="9" fill="#31405f"/><line x1="140" y1="250" x2="340" y2="250" stroke="#5a729e" stroke-width="2"/><line x1="140" y1="250" x2="140" y2="259" stroke="#5a729e" stroke-width="1"/><text x="143" y="268" text-anchor="start" font-family="monospace" font-size="9" fill="#8fa2c4">x=140</text><line x1="340" y1="250" x2="340" y2="259" stroke="#5a729e" stroke-width="1"/><text x="337" y="268" text-anchor="end" font-family="monospace" font-size="9" fill="#8fa2c4">x=340</text><g transform="translate(223.79 237.52) rotate(0.06)"><title>#1 taross-f</title><rect x="-17" y="-12.5" width="34" height="25" rx="2" fill="hsl(47, 62%, 46%)" stroke="#ffffff" stroke-width="2"/><rect x="-17" y="-12.5" width="34" height="3" rx="1" fill="#ffffff" opacity="0.16"/></g>
-</g></g>
-<text x="600" y="600" text-anchor="middle" font-family="monospace" font-size="26" fill="#e8eef9">github.com/taross-f</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Connecting the dots: a career line from 2009 to now, and a future grid. Chapter 1 is waiting for its first dot.">
+  <style>
+    .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+    .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2s ease-out infinite; }
+    @keyframes pulse { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.6); } }
+    .ghost { animation: blink 2.4s ease-in-out infinite both; }
+    @keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: .95; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <defs>
+    <linearGradient id="past" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7cb8ff"/>
+      <stop offset="0.5" stop-color="#5fd4c4"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="630" fill="#070c14"/>
+  <g transform="translate(72 24) scale(1.1)">
+  <rect x="0" y="0" width="960" height="500" rx="18" fill="#0d1420"/>
+  <rect x="0.5" y="0.5" width="959" height="499" rx="18" fill="none" stroke="#22304d"/>
+  <text class="mono" x="32" y="40" font-size="12" fill="#ffd166" letter-spacing="2">CONNECTING THE DOTS</text>
+  <text class="sans" x="32" y="68" font-size="19" fill="#e8eef9" font-weight="700">Looking back, the dots connect. Where does the next one go?</text>
+  <text class="sans" x="32" y="92" font-size="14" fill="#8fa2c4">これまでの点はつながった。これからは点を打っていく — 次は、どこに打つ？</text>
+  <rect x="736.5" y="20.5" width="191" height="56" rx="10" fill="#131c2c" stroke="#22304d"/>
+  <text class="mono" x="752" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">CHAPTER</text>
+  <text class="mono" x="752" y="63" font-size="19" fill="hsl(77, 85%, 66%)" font-weight="700">1</text>
+  <text class="mono" x="818" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">DOTS</text>
+  <text class="mono" x="818" y="63" font-size="19" fill="#e8eef9" font-weight="700">0</text>
+  <text class="mono" x="872" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">BEST</text>
+  <text class="mono" x="872" y="63" font-size="19" fill="#ffd166" font-weight="700">0</text>
+  <text class="mono" x="32" y="146" font-size="11" fill="#8fa2c4" letter-spacing="1.5">PAST · CONNECTED</text>
+  <polyline points="64,394 144,362 224,338 304,314 384,296 464,282" fill="none" stroke="url(#past)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="64" cy="394" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2009 Sobal — SI</title></circle>
+  <text class="mono" x="64" y="416" font-size="11" fill="#8fa2c4" text-anchor="middle">2009</text>
+  <text class="sans" x="64" y="432" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">Sobal</text>
+  <text class="sans" x="64" y="446" font-size="11" fill="#8fa2c4" text-anchor="middle">SI</text>
+  <circle cx="144" cy="362" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2012 gloops — mobile games</title></circle>
+  <text class="mono" x="144" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">2012</text>
+  <text class="sans" x="144" y="334" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">gloops</text>
+  <text class="sans" x="144" y="348" font-size="11" fill="#8fa2c4" text-anchor="middle">mobile games</text>
+  <circle cx="224" cy="338" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2018 REVISIO — IoT · edge AI</title></circle>
+  <text class="mono" x="224" y="360" font-size="11" fill="#8fa2c4" text-anchor="middle">2018</text>
+  <text class="sans" x="224" y="376" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">REVISIO</text>
+  <text class="sans" x="224" y="390" font-size="11" fill="#8fa2c4" text-anchor="middle">IoT · edge AI</text>
+  <circle cx="304" cy="314" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2021 PKSHA — AI SaaS</title></circle>
+  <text class="mono" x="304" y="270" font-size="11" fill="#8fa2c4" text-anchor="middle">2021</text>
+  <text class="sans" x="304" y="286" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">PKSHA</text>
+  <text class="sans" x="304" y="300" font-size="11" fill="#8fa2c4" text-anchor="middle">AI SaaS</text>
+  <circle cx="384" cy="296" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2024 Exec. Officer — AI SaaS org</title></circle>
+  <text class="mono" x="384" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">2024</text>
+  <text class="sans" x="384" y="334" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">Exec. Officer</text>
+  <text class="sans" x="384" y="348" font-size="11" fill="#8fa2c4" text-anchor="middle">AI SaaS org</text>
+  <text class="mono" x="494" y="146" font-size="11" fill="#ffd166" letter-spacing="1.5">FUTURE · YOUR MOVE</text>
+  <line x1="464" y1="144" x2="464" y2="420" stroke="#22304d" stroke-width="1.5" stroke-dasharray="3 5"/>
+  <circle cx="500" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="410" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="378" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="346" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="314" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="282" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="250" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="218" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="186" r="1.8" fill="#2e3d5c"/>
+  <circle cx="500" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="536" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="572" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="608" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="644" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="680" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="716" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="752" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="788" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="824" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="860" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="896" cy="154" r="1.8" fill="#2e3d5c"/>
+  <text class="mono" x="500" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
+  <text class="mono" x="536" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
+  <text class="mono" x="572" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
+  <text class="mono" x="608" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
+  <text class="mono" x="644" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
+  <text class="mono" x="680" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
+  <text class="mono" x="716" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
+  <text class="mono" x="752" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
+  <text class="mono" x="788" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
+  <text class="mono" x="824" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">10</text>
+  <text class="mono" x="860" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">11</text>
+  <text class="mono" x="896" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">12</text>
+  <text class="mono" x="918" y="414" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
+  <text class="mono" x="918" y="382" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
+  <text class="mono" x="918" y="350" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
+  <text class="mono" x="918" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
+  <text class="mono" x="918" y="286" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
+  <text class="mono" x="918" y="254" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
+  <text class="mono" x="918" y="222" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
+  <text class="mono" x="918" y="190" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
+  <text class="mono" x="918" y="158" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
+  <text class="mono" x="918" y="436" font-size="10" fill="#8fa2c4" text-anchor="middle">x/y</text>
+  <text class="sans" x="698" y="170" font-size="14" fill="#8fa2c4" text-anchor="middle">open an issue to place the first dot</text>
+  <circle class="pulse" cx="464" cy="282" r="9" fill="none" stroke="#ffd166" stroke-width="2"/>
+  <circle cx="464" cy="282" r="8" fill="#ffd166"><title>now — PKSHA Technology, Engineering Manager · FDE</title></circle>
+  <text class="mono" x="452" y="238" font-size="11" fill="#ffd166" text-anchor="end" font-weight="700">NOW</text>
+  <text class="sans" x="452" y="254" font-size="13" fill="#e8eef9" text-anchor="end" font-weight="600">EM · FDE</text>
+  <text class="sans" x="452" y="268" font-size="11" fill="#8fa2c4" text-anchor="end">PKSHA</text>
+  </g>
+  <text class="mono" x="72" y="608" font-size="22" fill="#ffd166">chapter 1: 0 dots and counting</text>
+  <text class="mono" x="1128" y="608" font-size="22" fill="#e8eef9" text-anchor="end">github.com/taross-f</text>
 </svg>

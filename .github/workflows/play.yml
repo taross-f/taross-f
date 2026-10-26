@@ -1,4 +1,4 @@
-name: tower
+name: dots
 
 on:
   issues:
@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   # Serialise every play. Two runs updating state.json at once would corrupt it.
-  group: tower-game
+  group: dots-game
   cancel-in-progress: false
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Simulate the drop
+      - name: Place the dot
         id: play
         env:
           # The issue body is attacker controlled. It only ever travels through
@@ -91,11 +91,11 @@ jobs:
 
           if [ "${WANTED_COMMIT}" = 'true' ] && [ "${PUSHED}" != 'true' ]; then
             printf '%s\n' \
-              '盤面が混雑しています。この手は反映できませんでした。' \
+              '盤面が混雑しています。この点は反映できませんでした。' \
               '' \
               'お手数ですが、もう一度 issue を立て直してください。' \
               '' \
-              'The board was busy and this drop was not recorded. Please open a new issue to retry.' \
+              'The board was busy and this dot was not recorded. Please open a new issue to retry.' \
               > "${BODY_FILE}"
           elif [ -n "${REPLY_FILE:-}" ] && [ -f "${REPLY_FILE}" ]; then
             cp "${REPLY_FILE}" "${BODY_FILE}"
