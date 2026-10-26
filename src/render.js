@@ -3,31 +3,61 @@
  *
  * Everything here is constrained by what GitHub actually renders in a README:
  *   - <script> is stripped, so the board has to work as a single still frame
+ *     (CSS animation is fine, and with reduced motion every frame still reads)
  *   - no external fonts, no external images, no xlink:href
  *   - prefers-color-scheme is unreliable, so the background is painted
  *     explicitly and the palette is chosen to read on light and dark alike
  */
 
-import { WORLD } from './sim.js';
+import { GRID } from './dots.js';
 
-const BOARD_W = WORLD.WIDTH;
-const BOARD_H = WORLD.HEIGHT;
-const GROUND_Y = WORLD.GROUND_Y;
-const LEFT = WORLD.GROUND_LEFT;
-const RIGHT = WORLD.GROUND_RIGHT;
+export const BOARD_W = 960;
+export const BOARD_H = 500;
+
+const COL1_X = 120;
+const COL_STEP = 48;
+const ROW1_Y = 426;
+const ROW_STEP = 34;
+
+/** Grid coordinates -> board pixels. */
+export function toPx(point) {
+  return {
+    x: COL1_X + (point.x - GRID.X_MIN) * COL_STEP,
+    y: ROW1_Y - (point.y - GRID.Y_MIN) * ROW_STEP,
+  };
+}
 
 const PALETTE = {
   bg: '#0d1420',
-  bgAlt: '#131c2c',
-  panel: '#1b2740',
-  ground: '#31405f',
-  groundTop: '#5a729e',
+  panel: '#131c2c',
+  border: '#22304d',
+  edge: '#16233a',
+  gridDot: '#2e3d5c',
   text: '#e8eef9',
   muted: '#8fa2c4',
+  dot: '#7cb8ff',
   accent: '#ffd166',
-  danger: '#ff7b72',
-  grid: '#1a2436',
 };
+
+// How long the reveal takes to trace from one edge to the other.
+const TRACE_S = 2.4;
+const TRACE_DELAY_S = 0.4;
+
+const STYLE = `<style>
+    .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+    .ghost { animation: blink 2.4s ease-in-out infinite both; }
+    @keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: .95; } }
+    .trace { animation: trace ${TRACE_S}s cubic-bezier(.45, 0, .2, 1) ${TRACE_DELAY_S}s both; }
+    @keyframes trace { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+    .web { animation: fade 1.2s ease-out ${TRACE_DELAY_S + TRACE_S}s both; }
+    @keyframes fade { from { opacity: 0; } }
+    .lit { transform-box: fill-box; transform-origin: center; animation: lit .5s cubic-bezier(.34, 1.56, .64, 1) both; }
+    @keyframes lit { from { fill: ${PALETTE.dot}; transform: scale(.6); } }
+    .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2s ease-out ${TRACE_DELAY_S + TRACE_S}s infinite both; }
+    @keyframes pulse { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.6); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>`;
 
 /** Escape text destined for an XML text node or attribute value. */
 export function escapeXml(value) {
@@ -45,112 +75,197 @@ function n(value) {
   return Object.is(r, -0) ? 0 : r;
 }
 
-/** Each round gets its own hue so the history reads as distinct runs. */
-function roundHue(round) {
-  return (round * 47) % 360;
+function text(x, y, cls, size, fill, content, extra = '') {
+  return `<text class="${cls}" x="${x}" y="${y}" font-size="${size}" fill="${fill}"${extra}>`
+    + `${escapeXml(content)}</text>`;
 }
 
-function blockFill(round, index, total) {
-  const hue = roundHue(round);
-  // Gentle ramp from the base colour up as the tower grows.
-  const t = total <= 1 ? 0 : index / (total - 1);
-  const light = 46 + Math.round(t * 18);
-  const sat = 62 - Math.round(t * 12);
-  return `hsl(${hue}, ${sat}%, ${light}%)`;
+// ---------------------------------------------------------------------------
+// pieces
+// ---------------------------------------------------------------------------
+
+function header(view) {
+  const parts = [];
+  parts.push(text(32, 40, 'mono', 12, PALETTE.accent, 'CONNECTING THE DOTS', ' letter-spacing="2"'));
+  parts.push(text(32, 68, 'sans', 19, PALETTE.text,
+    'You can’t connect the dots looking forward. Place one anyway — where?',
+    ' font-weight="700"'));
+  parts.push(text(32, 92, 'sans', 14, PALETTE.muted,
+    '点は、打っているあいだはつながらない。それでも打つ。次は、どこに打つ？'));
+
+  parts.push(`<rect x="782.5" y="20.5" width="145" height="56" rx="10" `
+    + `fill="${PALETTE.panel}" stroke="${PALETTE.border}"/>`);
+  const stats = [
+    [798, 'CHAPTER', String(view.chapter), PALETTE.accent],
+    [866, 'DOTS', String(view.dots.length), PALETTE.text],
+  ];
+  for (const [x, label, value, color] of stats) {
+    parts.push(text(x, 40, 'mono', 10, PALETTE.muted, label, ' letter-spacing="1"'));
+    parts.push(text(x, 63, 'mono', 19, color, value, ' font-weight="700"'));
+  }
+  return parts.join('\n  ');
 }
 
-function blockStroke(round) {
-  return `hsl(${roundHue(round)}, 70%, 26%)`;
+function grid() {
+  const parts = [];
+  const top = toPx({ x: GRID.X_MIN, y: GRID.Y_MAX }).y;
+  const bottom = toPx({ x: GRID.X_MIN, y: GRID.Y_MIN }).y;
+
+  // The two edges a connection has to join.
+  for (const x of [GRID.X_MIN, GRID.X_MAX]) {
+    const p = toPx({ x, y: GRID.Y_MIN });
+    parts.push(`<rect x="${p.x - 20}" y="${top - 18}" width="40" height="${bottom - top + 36}" `
+      + `rx="12" fill="${PALETTE.edge}"/>`);
+    parts.push(text(p.x, top - 26, 'mono', 10, PALETTE.muted, 'EDGE',
+      ' text-anchor="middle" letter-spacing="1.5"'));
+  }
+
+  for (let y = GRID.Y_MIN; y <= GRID.Y_MAX; y++) {
+    for (let x = GRID.X_MIN; x <= GRID.X_MAX; x++) {
+      const p = toPx({ x, y });
+      parts.push(`<circle cx="${p.x}" cy="${p.y}" r="1.8" fill="${PALETTE.gridDot}"/>`);
+    }
+  }
+
+  // Axis labels, so a player can read a coordinate straight off the board.
+  for (let x = GRID.X_MIN; x <= GRID.X_MAX; x++) {
+    const p = toPx({ x, y: GRID.Y_MIN });
+    parts.push(text(p.x, bottom + 34, 'mono', 11, PALETTE.muted, String(x), ' text-anchor="middle"'));
+  }
+  const left = toPx({ x: GRID.X_MIN, y: 0 }).x;
+  for (let y = GRID.Y_MIN; y <= GRID.Y_MAX; y++) {
+    const p = toPx({ x: GRID.X_MIN, y });
+    parts.push(text(left - 40, p.y + 4, 'mono', 11, PALETTE.muted, String(y), ' text-anchor="middle"'));
+  }
+  parts.push(text(left - 40, bottom + 34, 'mono', 10, PALETTE.muted, 'y/x', ' text-anchor="middle"'));
+
+  return parts.join('\n  ');
 }
 
-function renderBlock(block, index, total, round, isLast) {
-  const deg = n((block.angle * 180) / Math.PI);
-  const x = n(-block.w / 2);
-  const y = n(-block.h / 2);
-  const w = n(block.w);
-  const h = n(block.h);
-
-  const fill = blockFill(round, index, total);
-  const stroke = isLast ? '#ffffff' : blockStroke(round);
-  const strokeWidth = isLast ? 2 : 1;
-
-  const title = `#${block.issue} ${block.user || 'unknown'}`;
-
-  return `<g transform="translate(${n(block.x)} ${n(block.y)}) rotate(${deg})">`
-    + `<title>${escapeXml(title)}</title>`
-    + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" `
-    + `fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
-    + `<rect x="${x}" y="${y}" width="${w}" height="${n(Math.min(3, block.h / 4))}" rx="1" `
-    + `fill="#ffffff" opacity="0.16"/>`
-    + `</g>`;
+function dotTitle(dot) {
+  return `<title>${escapeXml(`#${dot.issue} ${dot.user || 'unknown'} (${dot.x}, ${dot.y})`)}</title>`;
 }
 
-/**
- * The board scene itself: background, platform, blocks, record line.
- * Shared by the README board and the share card so the two never diverge.
- */
-function scene(view) {
+/** A chapter still in play: just the dots, no lines. */
+function scattered(view) {
   const parts = [];
 
-  parts.push(`<rect x="0" y="0" width="${BOARD_W}" height="${BOARD_H}" fill="${PALETTE.bg}"/>`);
-
-  // Faint horizontal rules every 50px, purely to give height a sense of scale.
-  for (let y = GROUND_Y - 50; y > 10; y -= 50) {
-    parts.push(`<line x1="0" y1="${y}" x2="${BOARD_W}" y2="${y}" `
-      + `stroke="${PALETTE.grid}" stroke-width="1"/>`);
-    parts.push(`<text x="6" y="${y - 4}" font-family="monospace" font-size="8" `
-      + `fill="${PALETTE.grid}">${GROUND_Y - y}</text>`);
+  if (view.dots.length === 0) {
+    const mid = toPx({ x: (GRID.X_MIN + GRID.X_MAX) / 2, y: (GRID.Y_MIN + GRID.Y_MAX) / 2 });
+    parts.push(text(mid.x, mid.y + 5, 'sans', 15, PALETTE.muted,
+      'open an issue to place the first dot', ' text-anchor="middle"'));
+    return parts.join('\n  ');
   }
 
-  // Ground: everything below the platform line.
-  parts.push(`<rect x="0" y="${GROUND_Y}" width="${BOARD_W}" height="${BOARD_H - GROUND_Y}" `
-    + `fill="${PALETTE.bgAlt}"/>`);
+  view.dots.forEach((dot, i) => {
+    const p = toPx(dot);
+    const isLast = i === view.dots.length - 1;
+    parts.push(`<circle cx="${p.x}" cy="${p.y}" r="${isLast ? 6.5 : 5.5}" fill="${PALETTE.dot}" `
+      + `stroke="${isLast ? '#ffffff' : PALETTE.bg}" stroke-width="2">${dotTitle(dot)}</circle>`);
+  });
 
-  // The platform. Anything whose centre leaves this span has fallen.
-  parts.push(`<rect x="${LEFT}" y="${GROUND_Y}" width="${RIGHT - LEFT}" height="9" `
-    + `fill="${PALETTE.ground}"/>`);
-  parts.push(`<line x1="${LEFT}" y1="${GROUND_Y}" x2="${RIGHT}" y2="${GROUND_Y}" `
-    + `stroke="${PALETTE.groundTop}" stroke-width="2"/>`);
-
-  // Edge ticks showing the legal x range. These have to stay inside the 270px
-  // viewBox or GitHub simply clips them away.
-  for (const [x, label, anchor] of [[LEFT, String(LEFT), 'start'], [RIGHT, String(RIGHT), 'end']]) {
-    parts.push(`<line x1="${x}" y1="${GROUND_Y}" x2="${x}" y2="${GROUND_Y + 9}" `
-      + `stroke="${PALETTE.groundTop}" stroke-width="1"/>`);
-    parts.push(`<text x="${anchor === 'start' ? x + 3 : x - 3}" y="${GROUND_Y + 18}" `
-      + `text-anchor="${anchor}" font-family="monospace" font-size="9" `
-      + `fill="${PALETTE.muted}">x=${label}</text>`);
-  }
-
-  // Best-ever height, drawn over the board as a target to beat.
-  if (view.best > 0 && GROUND_Y - view.best > 4) {
-    const y = n(GROUND_Y - view.best);
-    parts.push(`<line x1="0" y1="${y}" x2="${BOARD_W}" y2="${y}" `
-      + `stroke="${PALETTE.accent}" stroke-width="1" stroke-dasharray="6 4" opacity="0.85"/>`);
-    parts.push(`<text x="${BOARD_W - 6}" y="${y - 5}" text-anchor="end" `
-      + `font-family="monospace" font-size="10" fill="${PALETTE.accent}">`
-      + `BEST ${Math.round(view.best)}</text>`);
-  }
-
-  const total = view.blocks.length;
-  for (let i = 0; i < total; i++) {
-    parts.push(renderBlock(view.blocks[i], i, total, view.round, i === total - 1));
-  }
-
-  if (total === 0) {
-    parts.push(`<text x="${BOARD_W / 2}" y="${GROUND_Y - 40}" text-anchor="middle" `
-      + `font-family="monospace" font-size="13" fill="${PALETTE.muted}">`
-      + `open an issue to drop the first block</text>`);
-  }
-
-  return parts.join('');
+  // Where is the next one going?
+  const p = toPx(view.dots[view.dots.length - 1]);
+  parts.push(`<circle class="ghost" cx="${p.x}" cy="${p.y}" r="15" fill="none" `
+    + `stroke="${PALETTE.text}" stroke-width="1.2" stroke-dasharray="3 4"/>`);
+  return parts.join('\n  ');
 }
 
-function stat(x, y, label, value, valueColor) {
-  return `<text x="${x}" y="${y}" font-family="monospace" font-size="9" `
-    + `fill="${PALETTE.muted}">${escapeXml(label)}</text>`
-    + `<text x="${x}" y="${y + 17}" font-family="monospace" font-size="17" `
-    + `font-weight="bold" fill="${valueColor}">${escapeXml(value)}</text>`;
+/** A chapter that just connected: the path traces itself edge to edge. */
+function revealed(view) {
+  const parts = [];
+  const { path, links } = view.reveal;
+  const onPath = new Set(path);
+
+  // The rest of the hidden web, faded in once the path has finished tracing.
+  const web = links
+    .filter(([a, b]) => !(onPath.has(a) && onPath.has(b) && Math.abs(path.indexOf(a) - path.indexOf(b)) === 1))
+    .map(([a, b]) => {
+      const p = toPx(view.dots[a]);
+      const q = toPx(view.dots[b]);
+      return `<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}"/>`;
+    });
+  if (web.length > 0) {
+    parts.push(`<g class="web" stroke="${PALETTE.muted}" stroke-width="1" opacity="0.35">`
+      + `${web.join('')}</g>`);
+  }
+
+  const pts = path.map((i) => toPx(view.dots[i]));
+  parts.push(`<polyline class="trace" pathLength="1" points="${pts.map((p) => `${p.x},${p.y}`).join(' ')}" `
+    + `fill="none" stroke="${PALETTE.accent}" stroke-width="3.5" stroke-linecap="round" `
+    + `stroke-linejoin="round"/>`);
+
+  // Dots off the path stay as they were.
+  view.dots.forEach((dot, i) => {
+    if (onPath.has(i)) return;
+    const p = toPx(dot);
+    parts.push(`<circle cx="${p.x}" cy="${p.y}" r="5" fill="${PALETTE.dot}" opacity="0.55">`
+      + `${dotTitle(dot)}</circle>`);
+  });
+
+  // Dots on the path light up as the trace reaches them.
+  const segment = path.length > 1 ? TRACE_S / (path.length - 1) : 0;
+  const last = view.dots.length - 1;
+  path.forEach((i, k) => {
+    const dot = view.dots[i];
+    const p = toPx(dot);
+    const delay = n(TRACE_DELAY_S + k * segment);
+    parts.push(`<circle class="lit" style="animation-delay:${delay}s" cx="${p.x}" cy="${p.y}" `
+      + `r="${i === last ? 8 : 7}" fill="${PALETTE.accent}" stroke="${i === last ? '#ffffff' : PALETTE.bg}" `
+      + `stroke-width="2">${dotTitle(dot)}</circle>`);
+  });
+
+  // The missing piece.
+  const p = toPx(view.dots[last]);
+  parts.push(`<circle class="pulse" cx="${p.x}" cy="${p.y}" r="10" fill="none" `
+    + `stroke="${PALETTE.accent}" stroke-width="2"/>`);
+
+  return parts.join('\n  ');
+}
+
+function footer(view) {
+  const y = BOARD_H - 16;
+  if (view.reveal) {
+    const e = view.reveal.entry;
+    return text(32, y, 'sans', 13, PALETTE.accent,
+      `Chapter ${e.chapter} connected: ${e.pathDots} of ${e.dots} dots, `
+      + `${e.people} ${e.people === 1 ? 'person' : 'people'}, back to #${e.oldestIssue}. `
+      + `Last piece by ${e.connectedBy}.`);
+  }
+  if (view.lastUser) {
+    return text(32, y, 'mono', 11, PALETTE.muted, `last dot: #${view.lastIssue} by ${view.lastUser}`);
+  }
+  return '';
+}
+
+// ---------------------------------------------------------------------------
+// public
+// ---------------------------------------------------------------------------
+
+function ariaLabel(view) {
+  const lead = 'Connecting the dots: ';
+  if (view.reveal) {
+    const e = view.reveal.entry;
+    return `${lead}chapter ${e.chapter} just connected. ${e.pathDots} of ${e.dots} dots turned out `
+      + 'to link from the left edge of the grid to the right.';
+  }
+  if (view.dots.length === 0) {
+    return `${lead}chapter ${view.chapter} is an empty grid waiting for its first dot.`;
+  }
+  return `${lead}chapter ${view.chapter} has ${view.dots.length} scattered dots and no visible connection yet.`;
+}
+
+/** Everything inside the board frame. Shared by the README board and the share card. */
+function scene(view) {
+  return [
+    `<rect x="0" y="0" width="${BOARD_W}" height="${BOARD_H}" rx="18" fill="${PALETTE.bg}"/>`,
+    `<rect x="0.5" y="0.5" width="${BOARD_W - 1}" height="${BOARD_H - 1}" rx="18" fill="none" `
+      + `stroke="${PALETTE.border}"/>`,
+    header(view),
+    grid(),
+    view.reveal ? revealed(view) : scattered(view),
+    footer(view),
+  ].filter(Boolean).join('\n  ');
 }
 
 /**
@@ -158,137 +273,60 @@ function stat(x, y, label, value, valueColor) {
  * @param {object} view see buildView
  */
 export function renderBoard(view) {
-  const parts = [];
-
-  parts.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOARD_W} ${BOARD_H}" `
-    + `width="${BOARD_W}" height="${BOARD_H}" role="img" `
-    + `aria-label="${escapeXml(ariaLabel(view))}">`);
-
-  parts.push(scene(view));
-
-  // HUD panel, top left, over the empty sky.
-  parts.push(`<rect x="10" y="10" width="164" height="46" rx="4" `
-    + `fill="${PALETTE.panel}" opacity="0.92"/>`);
-  parts.push(stat(20, 25, 'HEIGHT', String(Math.round(view.height)), PALETTE.text));
-  parts.push(stat(86, 25, 'BLOCKS', String(view.blocks.length), PALETTE.text));
-  parts.push(stat(134, 25, 'ROUND', String(view.round), PALETTE.accent));
-
-  if (view.collapsedBy) {
-    const c = view.collapsedBy;
-    parts.push(`<rect x="10" y="62" width="${BOARD_W - 20}" height="22" rx="4" `
-      + `fill="${PALETTE.panel}" opacity="0.92"/>`);
-    parts.push(`<text x="20" y="77" font-family="monospace" font-size="10" `
-      + `fill="${PALETTE.danger}">`
-      + escapeXml(`round ${c.round} ended at ${Math.round(c.height)}px `
-        + `(${c.blocks} blocks) - last drop by ${c.collapsedBy}`)
-      + `</text>`);
-  } else if (view.lastUser) {
-    parts.push(`<text x="10" y="76" font-family="monospace" font-size="10" `
-      + `fill="${PALETTE.muted}">`
-      + escapeXml(`last drop: #${view.lastIssue} by ${view.lastUser}`)
-      + `</text>`);
-  }
-
-  parts.push(`</svg>`);
-  return parts.join('\n');
-}
-
-function ariaLabel(view) {
-  if (view.blocks.length === 0) {
-    return `Tower game round ${view.round}: the board is empty, waiting for the first block.`;
-  }
-  return `Tower game round ${view.round}: ${view.blocks.length} blocks stacked, `
-    + `current height ${Math.round(view.height)} pixels, `
-    + `best ever ${Math.round(view.bestOverall)} pixels.`;
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOARD_W} ${BOARD_H}" `
+      + `width="${BOARD_W}" height="${BOARD_H}" role="img" aria-label="${escapeXml(ariaLabel(view))}">`,
+    `  ${STYLE}`,
+    `  ${scene(view)}`,
+    '</svg>',
+  ].join('\n');
 }
 
 /**
- * 1200x630 card for link previews, regenerated whenever the record moves.
+ * 1200x630 card for link previews, regenerated whenever a chapter connects.
  */
 export function renderShare(view) {
   const W = 1200;
   const H = 630;
-  // Headline block takes the top ~145px and the footer the bottom ~55px, so the
-  // board has to be scaled to fit what is left or the tower falls off the card.
-  const offsetY = 145;
-  const footerRoom = 62;
-  const scale = Math.min(W / BOARD_W, (H - offsetY - footerRoom) / BOARD_H);
-  const boardW = BOARD_W * scale;
-  const offsetX = (W - boardW) / 2;
+  const scale = 1.1;
+  const offsetX = (W - BOARD_W * scale) / 2;
+  const offsetY = 24;
 
-  const parts = [];
-  parts.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" `
-    + `width="${W}" height="${H}" role="img" `
-    + `aria-label="${escapeXml(ariaLabel(view))}">`);
+  const headline = view.reveal
+    ? `chapter ${view.reveal.entry.chapter}: ${view.reveal.entry.pathDots} dots, connected`
+    : `chapter ${view.chapter}: ${view.dots.length} dots, waiting`;
 
-  // Slightly darker than the board so the playfield reads as its own panel.
-  parts.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#070c14"/>`);
-
-  parts.push(`<text x="${W / 2}" y="72" text-anchor="middle" font-family="monospace" `
-    + `font-size="30" fill="${PALETTE.muted}">SHARED TOWER</text>`);
-  parts.push(`<text x="${W / 2}" y="126" text-anchor="middle" font-family="monospace" `
-    + `font-size="54" font-weight="bold" fill="${PALETTE.accent}">`
-    + escapeXml(`${Math.round(view.shareHeight)} px / ${view.shareBlocks} blocks`)
-    + `</text>`);
-
-  // Clip so a toppling block cannot spill outside the card. The clip lives on an
-  // untransformed wrapper: a clip-path on the same element as a transform is
-  // resolved in that element's own (post-transform) space, which would put the
-  // rectangle in board coordinates instead of card coordinates.
-  parts.push(`<clipPath id="board"><rect x="${n(offsetX)}" y="${offsetY}" `
-    + `width="${n(boardW)}" height="${n(BOARD_H * scale)}" rx="6"/></clipPath>`);
-  parts.push(`<g clip-path="url(#board)">`);
-  parts.push(`<g transform="translate(${n(offsetX)} ${offsetY}) scale(${n(scale)})">`);
-  parts.push(scene(view));
-  parts.push(`</g></g>`);
-
-  parts.push(`<text x="${W / 2}" y="${H - 30}" text-anchor="middle" font-family="monospace" `
-    + `font-size="26" fill="${PALETTE.text}">github.com/taross-f</text>`);
-
-  parts.push(`</svg>`);
-  return parts.join('\n');
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" `
+      + `width="${W}" height="${H}" role="img" aria-label="${escapeXml(ariaLabel(view))}">`,
+    `  ${STYLE}`,
+    `  <rect x="0" y="0" width="${W}" height="${H}" fill="#070c14"/>`,
+    `  <g transform="translate(${offsetX} ${offsetY}) scale(${scale})">`,
+    `  ${scene(view)}`,
+    '  </g>',
+    `  ${text(offsetX, H - 22, 'mono', 22, PALETTE.accent, headline)}`,
+    `  ${text(W - offsetX, H - 22, 'mono', 22, PALETTE.text, 'github.com/taross-f', ' text-anchor="end"')}`,
+    '</svg>',
+  ].join('\n');
 }
 
 /**
- * Assemble the drawing input from persisted state plus a replayed board.
+ * Assemble the drawing input from persisted state plus the chapter's dots.
  *
- * @param {object} state   state.json contents
- * @param {object} world   world returned by replay()
- * @param {number} height  replayed tower height
- * @param {object|null} collapsedBy hall-of-fame entry to call out, if the last
- *        move ended a round
+ * @param {object} state  state.json contents
+ * @param {object[]} dots the chapter to draw, in placement order
+ * @param {{entry:object,path:number[],links:[number,number][]}|null} reveal
+ *        set when the last move connected the chapter
  */
-export function buildView(state, world, height, collapsedBy = null) {
-  const placed = world.bodies
-    .filter((b) => !b.static)
-    .map((b) => ({
-      x: b.x,
-      y: b.y,
-      angle: b.angle,
-      w: b.w,
-      h: b.h,
-      issue: b.issue,
-      user: b.user,
-    }));
-
-  const bestFromFame = state.hallOfFame.reduce((max, e) => (e.height > max ? e.height : max), 0);
-  const last = state.actions.length > 0 ? state.actions[state.actions.length - 1] : null;
+export function buildView(state, dots, reveal = null) {
+  const last = dots.length > 0 ? dots[dots.length - 1] : null;
 
   return {
-    round: state.round,
-    height,
-    // The record line marks a mark set by a *finished* round. Folding the live
-    // tower into it would pin the line to the top of the current stack, where it
-    // says nothing; kept separate, it is a target to beat.
-    best: bestFromFame,
-    bestOverall: Math.max(bestFromFame, height),
-    blocks: placed,
+    chapter: reveal ? reveal.entry.chapter : state.chapter,
+    dots: dots.map(({ x, y, issue, user }) => ({ x, y, issue, user })),
+    reveal,
+    connectedEntry: reveal ? reveal.entry : null,
     lastIssue: last ? last.issue : null,
     lastUser: last ? last.user : null,
-    collapsedBy,
-    // The share card headlines the run being celebrated, which after a collapse
-    // is the round that just ended rather than the empty board that replaced it.
-    shareHeight: collapsedBy ? collapsedBy.height : height,
-    shareBlocks: collapsedBy ? collapsedBy.blocks : placed.length,
   };
 }

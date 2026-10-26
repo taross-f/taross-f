@@ -5,14 +5,13 @@
  * exercised directly from tests without a GitHub event anywhere in sight.
  */
 
-import { X_MIN as PLATFORM_MIN, X_MAX as PLATFORM_MAX } from './sim.js';
+import { GRID } from './dots.js';
 
 export const PLAY_LABEL = 'play';
-// The accepted input range *is* the platform, so it is taken from the simulator
+// The accepted input range *is* the future grid, so it is taken from the game
 // rather than restated here. Restating it would let the two drift apart and
-// start accepting coordinates with no ground under them.
-export const X_MIN = PLATFORM_MIN;
-export const X_MAX = PLATFORM_MAX;
+// start accepting dots that cannot be drawn.
+export const { X_MIN, X_MAX, Y_MIN, Y_MAX } = GRID;
 export const COOLDOWN_MS = 10 * 60 * 1000;
 
 /** UTC, minute precision - enough for a "come back at" hint. */
@@ -33,55 +32,56 @@ export function hasPlayLabel(labels) {
 }
 
 /**
- * Pull the first integer out of an issue body.
+ * Pull the first two integers out of an issue body.
  *
  * The issue form renders as `### <label>` followed by the value, so heading
  * lines are dropped first - otherwise any digit in a field label would be
  * picked up ahead of the player's actual answer.
  *
- * @returns {number|null}
+ * @returns {number[]} zero, one or two integers
  */
-export function extractInteger(body) {
-  if (typeof body !== 'string') return null;
+export function extractIntegers(body) {
+  if (typeof body !== 'string') return [];
 
-  // NFKC folds full-width digits onto ASCII, so "２４０" is accepted.
+  // NFKC folds full-width digits and commas onto ASCII, so "７，３" is accepted.
   const text = body.normalize('NFKC')
     .replace(/<!--[\s\S]*?-->/g, '')
     .split(/\r?\n/)
     .filter((line) => !/^\s*#{1,6}\s/.test(line))
     .join('\n');
 
-  const match = text.match(/-?\d+/);
-  if (!match) return null;
-
-  const value = Number.parseInt(match[0], 10);
-  return Number.isFinite(value) ? value : null;
+  return [...text.matchAll(/-?\d+/g)]
+    .slice(0, 2)
+    .map((m) => Number.parseInt(m[0], 10))
+    .filter(Number.isFinite);
 }
 
 const REPLY = {
-  noInteger: [
-    'No coordinate found in this issue.',
+  noCoordinates: [
+    'No dot found in this issue.',
     '',
-    `Open a new one with a single **integer between ${X_MIN} and ${X_MAX}** in the body.`,
+    `Open a new one with **two integers**: x (${X_MIN}–${X_MAX}) and y (${Y_MIN}–${Y_MAX}), `
+      + 'for example `7 3`.',
     '',
-    `座標を読み取れませんでした。本文に **${X_MIN} 〜 ${X_MAX} の整数** を 1 つだけ書いてください。`,
+    `点の位置を読み取れませんでした。本文に **x (${X_MIN}〜${X_MAX}) と y (${Y_MIN}〜${Y_MAX}) の`
+      + '整数 2 つ** を書いてください。例: `7 3`',
   ].join('\n'),
 };
 
-function outOfRangeReply(value) {
+function offGridReply(x, y) {
   return [
-    `\`${value}\` is off the platform.`,
+    `\`(${x}, ${y})\` is off the grid.`,
     '',
-    `The valid range is **${X_MIN} to ${X_MAX}** — there is no ground outside it.`,
+    `x runs from **${X_MIN} to ${X_MAX}** and y from **${Y_MIN} to ${Y_MAX}**.`,
     '',
-    `\`${value}\` は範囲外です。有効な範囲は ${X_MIN} 〜 ${X_MAX} です。`,
+    `\`(${x}, ${y})\` は盤面の外です。x は ${X_MIN} 〜 ${X_MAX}、y は ${Y_MIN} 〜 ${Y_MAX} です。`,
   ].join('\n');
 }
 
 function rateLimitedReply(retryAtMs) {
   const when = formatUtc(retryAtMs);
   return [
-    'One drop per player every 10 minutes.',
+    'One dot per player every 10 minutes.',
     '',
     `You can play again at **${when}**.`,
     '',
@@ -98,7 +98,7 @@ function rateLimitedReply(retryAtMs) {
  * @param {string} input.user        author login
  * @param {number|string|Date} input.now
  * @param {string|null} [input.lastPlayedAt] when this user last played
- * @returns {{ok:true,x:number}|{ok:false,code:string,reply:string|null}}
+ * @returns {{ok:true,x:number,y:number}|{ok:false,code:string,reply:string|null}}
  */
 export function parseAction(input) {
   const { body, labels, user, now, lastPlayedAt = null } = input;
@@ -108,13 +108,14 @@ export function parseAction(input) {
     return { ok: false, code: 'not_a_play', reply: null };
   }
 
-  const value = extractInteger(body);
-  if (value === null) {
-    return { ok: false, code: 'no_integer', reply: REPLY.noInteger };
+  const values = extractIntegers(body);
+  if (values.length < 2) {
+    return { ok: false, code: 'no_coordinates', reply: REPLY.noCoordinates };
   }
 
-  if (value < X_MIN || value > X_MAX) {
-    return { ok: false, code: 'out_of_range', reply: outOfRangeReply(value), value };
+  const [x, y] = values;
+  if (x < X_MIN || x > X_MAX || y < Y_MIN || y > Y_MAX) {
+    return { ok: false, code: 'out_of_range', reply: offGridReply(x, y), x, y };
   }
 
   const nowMs = new Date(now).getTime();
@@ -131,5 +132,5 @@ export function parseAction(input) {
     }
   }
 
-  return { ok: true, x: value, user, at: new Date(nowMs).toISOString() };
+  return { ok: true, x, y, user, at: new Date(nowMs).toISOString() };
 }

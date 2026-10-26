@@ -13,8 +13,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
-import { parseAction, X_MIN, X_MAX } from './parse.js';
-import { createWorld, dropBlock, replay } from './sim.js';
+import { parseAction, X_MIN, X_MAX, Y_MIN, Y_MAX } from './parse.js';
+import { componentOf, linksAmong, placeDot, replay } from './dots.js';
 import { buildView, renderBoard, renderShare } from './render.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,6 +36,7 @@ export const README_TARGETS = [
 export const MARKER_START = '<!-- BOARD:START -->';
 export const MARKER_END = '<!-- BOARD:END -->';
 export const HALL_OF_FAME_SIZE = 5;
+export const STATE_VERSION = 2;
 
 // ---------------------------------------------------------------------------
 // state
@@ -43,8 +44,8 @@ export const HALL_OF_FAME_SIZE = 5;
 
 export function defaultState() {
   return {
-    version: 1,
-    round: 1,
+    version: STATE_VERSION,
+    chapter: 1,
     actions: [],
     hallOfFame: [],
     lastPlayedBy: {},
@@ -59,14 +60,20 @@ export function readState(file) {
 
   const parsed = JSON.parse(raw);
   const base = defaultState();
+  const lastPlayedBy = parsed.lastPlayedBy && typeof parsed.lastPlayedBy === 'object'
+    ? parsed.lastPlayedBy
+    : {};
+
+  // A log from another game (the old tower) has nothing to replay here. Start
+  // over, but keep the cooldowns so nobody gets a free turn out of the switch.
+  if (parsed.version !== STATE_VERSION) return { ...base, lastPlayedBy };
+
   return {
-    version: parsed.version ?? base.version,
-    round: Number.isInteger(parsed.round) && parsed.round > 0 ? parsed.round : base.round,
+    version: STATE_VERSION,
+    chapter: Number.isInteger(parsed.chapter) && parsed.chapter > 0 ? parsed.chapter : base.chapter,
     actions: Array.isArray(parsed.actions) ? parsed.actions : [],
     hallOfFame: Array.isArray(parsed.hallOfFame) ? parsed.hallOfFame : [],
-    lastPlayedBy: parsed.lastPlayedBy && typeof parsed.lastPlayedBy === 'object'
-      ? parsed.lastPlayedBy
-      : {},
+    lastPlayedBy,
   };
 }
 
@@ -74,117 +81,84 @@ export function writeState(file, state) {
   writeFileSync(file, `${JSON.stringify(state, null, 2)}\n`);
 }
 
-function bestHeight(hallOfFame) {
-  return hallOfFame.reduce((max, e) => (e.height > max ? e.height : max), 0);
-}
-
 // ---------------------------------------------------------------------------
 // applying a move
 // ---------------------------------------------------------------------------
 
 /**
- * Replay the round so far, drop the new block, and fold the outcome back into
+ * Replay the chapter so far, place the new dot, and fold the outcome back into
  * state. Returns a new state object; the input is not modified.
  *
  * @param {object} state
- * @param {{issue:number,user:string,x:number,at:string}} action
+ * @param {{issue:number,user:string,x:number,y:number,at:string}} action
  */
 export function applyPlay(state, action) {
   const history = replay(state.actions);
 
-  // The stored log never contains a collapsing move, so a collapse here means
-  // the simulator no longer agrees with the record it produced. Close the round
-  // out honestly rather than pretending the board still stands.
-  const drifted = history.collapsed;
+  // The stored log never contains a connecting move, so an inconsistent replay
+  // means the rules no longer agree with the record they produced. Start the
+  // chapter over rather than revealing a connection nobody actually made.
+  const drifted = !history.consistent;
 
-  let world = history.world;
-  let height = history.height;
-  let round = state.round;
-  let actions = state.actions;
-  let hallOfFame = state.hallOfFame;
+  const chapter = drifted ? state.chapter + 1 : state.chapter;
+  const actions = drifted ? [] : state.actions;
+  const dots = drifted ? [] : history.dots;
 
-  if (drifted) {
-    hallOfFame = recordRound(hallOfFame, {
-      round,
-      height: Math.round(height),
-      blocks: world.bodies.length - 1,
-      collapsedBy: history.turns[history.turns.length - 1].user,
-      at: action.at,
-      note: 'closed out after a simulator change',
-    });
-    round += 1;
-    actions = [];
-    world = createWorld();
-    height = 0;
+  const result = placeDot(dots, action);
+  if (!result.ok) {
+    return { rejected: result.code, state };
   }
-
-  const previousBest = bestHeight(hallOfFame);
-  const result = dropBlock(world, action, height);
 
   const next = {
     ...state,
-    round,
+    chapter,
     actions,
-    hallOfFame,
     lastPlayedBy: { ...state.lastPlayedBy, [action.user]: action.at },
   };
 
-  let collapseEntry = null;
+  let reveal = null;
 
-  if (result.collapsed) {
-    collapseEntry = {
-      round: next.round,
-      height: Math.round(result.height),
-      blocks: result.world.bodies.length - 1,
-      collapsedBy: action.user,
+  if (result.path) {
+    const path = result.path.map((i) => result.dots[i]);
+    const oldest = path.reduce((min, d) => (d.issue < min.issue ? d : min), path[0]);
+    const entry = {
+      chapter: next.chapter,
+      dots: result.dots.length,
+      pathDots: path.length,
+      people: new Set(path.map((d) => d.user)).size,
+      oldestIssue: oldest.issue,
+      connectedBy: action.user,
       at: action.at,
     };
-    next.hallOfFame = recordRound(next.hallOfFame, collapseEntry);
-    next.round += 1;
-    next.actions = [];
+    // Everything the path's dots were quietly linked to, to show how much of
+    // the scatter was part of it all along.
+    const component = componentOf(result.dots, result.path[0]);
+    reveal = { entry, path: result.path, links: linksAmong(result.dots, component) };
 
-    // The next round starts from an empty platform.
-    world = createWorld();
-    height = 0;
+    next.hallOfFame = recordChapter(next.hallOfFame, entry);
+    next.chapter += 1;
+    // The next dot starts a fresh, empty grid.
+    next.actions = [];
   } else {
     next.actions = [...actions, action];
-    world = result.world;
-    height = result.height;
   }
 
-  const view = buildView(next, world, height, collapseEntry);
-
-  // The share card celebrates a score, so it has to show the board that scored
-  // it - not the empty platform that replaces it. The hall of fame is taken from
-  // before this round was recorded so the dashed line is the record it was
-  // measured against rather than a line drawn on top of itself.
-  const shareView = collapseEntry
-    ? buildView(
-      { ...next, round: collapseEntry.round, actions: [action], hallOfFame },
-      result.world,
-      result.height,
-      collapseEntry,
-    )
-    : view;
+  // A connected chapter stays on the board, revealed, until the next dot is
+  // placed - that is the picture worth looking at.
+  const view = buildView(next, result.dots, reveal);
 
   return {
     state: next,
-    world,
-    height,
     view,
-    shareView,
-    result,
-    collapseEntry,
+    connectedEntry: reveal ? reveal.entry : null,
+    path: reveal ? reveal.path.map((i) => result.dots[i]) : null,
     drifted,
-    previousBest,
-    recordBroken: !result.collapsed && result.height > previousBest && previousBest > 0,
   };
 }
 
-function recordRound(hallOfFame, entry) {
-  return [...hallOfFame, entry]
-    .sort((a, b) => (b.height - a.height) || (a.round - b.round))
-    .slice(0, HALL_OF_FAME_SIZE);
+/** Most recent first: this is a history of connections, not a leaderboard. */
+function recordChapter(hallOfFame, entry) {
+  return [entry, ...hallOfFame].slice(0, HALL_OF_FAME_SIZE);
 }
 
 // ---------------------------------------------------------------------------
@@ -217,24 +191,28 @@ function escapeMd(value) {
  */
 const BOARD_TEXT = {
   en: {
-    alt: 'Tower board',
-    cta: (url) => `**[▶ Drop a block](${url})** — `
-      + `open an issue with one integer between ${X_MIN} and ${X_MAX}. That is the whole game.`,
-    statsHead: ['Round', 'Height', 'Blocks', 'Best ever'],
-    collapse: (c) => `> Round ${c.round} came down at ${escapeMd(c.height)} px `
-      + `with ${c.blocks} blocks. Last drop by @${escapeMd(c.collapsedBy)}. A new round is underway.`,
-    fameSummary: 'Hall of fame',
-    fameHead: ['#', 'Round', 'Height', 'Blocks', 'Last drop'],
+    alt: 'Connecting the dots board',
+    cta: (url) => `**[▶ Place a dot](${url})** — `
+      + `open an issue with two integers: x (${X_MIN}–${X_MAX}) and y (${Y_MIN}–${Y_MAX}).`,
+    statsHead: ['Chapter', 'Dots placed', 'Connected so far'],
+    connected: (c) => `> **Chapter ${c.chapter} connected.** ${c.pathDots} of its ${c.dots} dots, `
+      + `placed by ${c.people} ${c.people === 1 ? 'person' : 'people'} and going back to `
+      + `#${c.oldestIssue}, turned out to run edge to edge. The last piece was `
+      + `@${escapeMd(c.connectedBy)}'s. The next dot starts an empty grid.`,
+    fameSummary: 'Past connections',
+    fameHead: ['Chapter', 'Dots placed', 'Dots on the path', 'People', 'Last piece'],
   },
   ja: {
-    alt: 'タワーの盤面',
-    cta: (url) => `**[▶ 1手打つ](${url})** — `
-      + `x 座標 (${X_MIN}–${X_MAX}) を書いて issue を立てるだけ。`,
-    statsHead: ['周回', '高さ', 'ブロック', '最高記録'],
-    collapse: (c) => `> Round ${c.round} は ${escapeMd(c.height)} px / ${c.blocks} blocks で崩壊。`
-      + `最後に置いたのは @${escapeMd(c.collapsedBy)}。新しい周回が始まっています。`,
-    fameSummary: '殿堂入り',
-    fameHead: ['#', '周回', '高さ', 'ブロック', '最後の一手'],
+    alt: 'Connecting the dots の盤面',
+    cta: (url) => `**[▶ 点を打つ](${url})** — `
+      + `x (${X_MIN}–${X_MAX}) と y (${Y_MIN}–${Y_MAX}) の整数 2 つを書いて issue を立てるだけ。`,
+    statsHead: ['章', '打たれた点', 'これまでのつながり'],
+    connected: (c) => `> **Chapter ${c.chapter} がつながりました。** ${c.dots} 個の点のうち `
+      + `${c.pathDots} 個 (${c.people} 人が打った、古いものは #${c.oldestIssue}) が、`
+      + `端から端までつながっていました。最後のピースは @${escapeMd(c.connectedBy)}。`
+      + `次の点から、また空の盤面が始まります。`,
+    fameSummary: 'これまでのつながり',
+    fameHead: ['章', '打たれた点', 'つながった点', '人数', '最後のピース'],
   },
 };
 
@@ -246,7 +224,7 @@ export function buildBoardBlock(state, view, repo, lang = 'en') {
 
   const newIssue = `https://github.com/${repo}/issues/new?template=play.yml`;
   // camo caches aggressively; the query is what makes an updated board show up.
-  const src = `assets/board.svg?v=${state.actions.length}-${state.round}`;
+  const src = `assets/board.svg?v=${state.actions.length}-${state.chapter}`;
 
   const lines = [];
   lines.push(`[![${t.alt}](${src})](${newIssue})`);
@@ -254,13 +232,12 @@ export function buildBoardBlock(state, view, repo, lang = 'en') {
   lines.push(t.cta(newIssue));
   lines.push('');
   lines.push(`| ${t.statsHead.join(' | ')} |`);
-  lines.push('|---:|---:|---:|---:|');
-  lines.push(`| ${state.round} | ${Math.round(view.height)} px | ${view.blocks.length} `
-    + `| ${Math.round(view.bestOverall)} px |`);
+  lines.push('|---:|---:|---:|');
+  lines.push(`| ${state.chapter} | ${state.actions.length} | ${state.chapter - 1} |`);
 
-  if (view.collapsedBy) {
+  if (view.connectedEntry) {
     lines.push('');
-    lines.push(t.collapse(view.collapsedBy));
+    lines.push(t.connected(view.connectedEntry));
   }
 
   if (state.hallOfFame.length > 0) {
@@ -269,9 +246,9 @@ export function buildBoardBlock(state, view, repo, lang = 'en') {
     lines.push('');
     lines.push(`| ${t.fameHead.join(' | ')} |`);
     lines.push('|---:|---:|---:|---:|:--|');
-    state.hallOfFame.forEach((e, i) => {
-      lines.push(`| ${i + 1} | ${e.round} | ${e.height} px | ${e.blocks} `
-        + `| @${escapeMd(e.collapsedBy)} |`);
+    state.hallOfFame.forEach((e) => {
+      lines.push(`| ${e.chapter} | ${e.dots} | ${e.pathDots} | ${e.people} `
+        + `| @${escapeMd(e.connectedBy)} |`);
     });
     lines.push('');
     lines.push('</details>');
@@ -301,10 +278,10 @@ export function refreshReadmes(state, view, repo) {
 // artifacts
 // ---------------------------------------------------------------------------
 
-export function writeArtifacts(state, view, { share, shareView }) {
+export function writeArtifacts(state, view, { share }) {
   mkdirSync(dirname(PATHS.board), { recursive: true });
   writeFileSync(PATHS.board, `${renderBoard(view)}\n`);
-  if (share) writeFileSync(PATHS.share, `${renderShare(shareView || view)}\n`);
+  if (share) writeFileSync(PATHS.share, `${renderShare(view)}\n`);
   writeState(PATHS.state, state);
 }
 
@@ -323,49 +300,80 @@ function setOutputs(outputs) {
 
 function writeReply(body) {
   const dir = process.env.RUNNER_TEMP || tmpdir();
-  const file = join(dir, 'tower-reply.md');
+  const file = join(dir, 'dots-reply.md');
   writeFileSync(file, body);
   return file;
 }
 
-function successReply(applied, repo) {
-  const { result, view, collapseEntry, state } = applied;
+const REJECTED_REPLY = {
+  occupied: [
+    'There is already a dot there.',
+    '',
+    'Pick an empty point on the grid and open a new issue.',
+    '',
+    'そこにはもう点があります。空いている点を選んで issue を立て直してください。',
+  ].join('\n'),
+  off_grid: [
+    'That point is off the grid.',
+    '',
+    `x runs from ${X_MIN} to ${X_MAX} and y from ${Y_MIN} to ${Y_MAX}.`,
+    '',
+    '盤面の外です。',
+  ].join('\n'),
+};
+
+function plural(count, word) {
+  return `${count} ${word}${count === 1 ? '' : 's'}`;
+}
+
+function ordinal(n) {
+  const tail = n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th');
+  return `${n}${tail}`;
+}
+
+function successReply(applied, action, repo) {
+  const { view, connectedEntry, state, path } = applied;
   const lines = [];
 
-  if (collapseEntry) {
-    lines.push('## Collapsed / 崩壊');
+  if (connectedEntry) {
+    lines.push('## Connected / つながった');
     lines.push('');
-    lines.push(`Round ${collapseEntry.round} ended here, recorded at `
-      + `**${collapseEntry.height} px / ${collapseEntry.blocks} blocks**.`);
+    lines.push(`Your dot at **(${action.x}, ${action.y})** was the missing piece. `
+      + `${path.length} dots, placed by ${connectedEntry.people} `
+      + `${connectedEntry.people === 1 ? 'person' : 'people'}, `
+      + 'turned out to run from the left edge to the right:');
     lines.push('');
-    lines.push(`Round ${state.round} has started from an empty platform.`);
+    lines.push(`(${action.x}, ${action.y}) が最後のピースでした。打たれた時には誰も気づかなかった `
+      + `${path.length} 個の点が、左端から右端までつながっていました。`);
     lines.push('');
-    lines.push(`Round ${collapseEntry.round} は ${collapseEntry.height} px / `
-      + `${collapseEntry.blocks} blocks で終了。次の周回が始まっています。`);
+    // Mentioning everyone on the path is the point: their dot, maybe weeks old,
+    // just connected.
+    path.forEach((d, i) => {
+      const mark = d.issue === action.issue ? ' ← the last piece / 最後のピース' : '';
+      lines.push(`${i + 1}. (${d.x}, ${d.y}) — #${d.issue} by @${d.user}${mark}`);
+    });
+    lines.push('');
+    lines.push(`Chapter ${state.chapter} starts on an empty grid with the next dot. / `
+      + `次の点から Chapter ${state.chapter} が空の盤面で始まります。`);
   } else {
-    lines.push('## Placed / 設置');
+    lines.push('## Placed / 点を打ちました');
     lines.push('');
-    lines.push(`Height **${Math.round(result.height)} px**, `
-      + `**${view.blocks.length}** blocks, Round **${state.round}**.`);
-    if (applied.recordBroken) {
-      lines.push('');
-      lines.push('That is a new record.');
-    }
+    lines.push(`Dot at **(${action.x}, ${action.y})**, the ${ordinal(view.dots.length)} `
+      + `in chapter ${state.chapter}. Nothing has connected yet — or nothing you can see.`);
     lines.push('');
-    lines.push(`高さ ${Math.round(result.height)} px、ブロック ${view.blocks.length} 個、`
-      + `Round ${state.round}。`);
+    lines.push(`(${action.x}, ${action.y}) に点を打ちました。Chapter ${state.chapter} の `
+      + `${view.dots.length} 個目です。まだ何もつながっていません — 見える範囲では。`);
   }
 
   if (applied.drifted) {
     lines.push('');
-    lines.push('> Note: replaying the stored log no longer stands up under the current '
-      + 'simulator. The previous round was closed out as a record and play resumed from a '
-      + 'new one. / 前の周回は記録として閉じ、新しい周回から再開しています。');
+    lines.push('> Note: the stored chapter no longer replays under the current rules, so '
+      + 'play resumed on a new, empty grid. / ルール変更のため、新しい空の盤面から再開しています。');
   }
 
   lines.push('');
   lines.push(`![board](https://raw.githubusercontent.com/${repo}/main/assets/board.svg`
-    + `?v=${state.actions.length}-${state.round})`);
+    + `?v=${state.actions.length}-${state.chapter})`);
   lines.push('');
   lines.push(`盤面: https://github.com/${repo}#readme`);
   return lines.join('\n');
@@ -419,28 +427,37 @@ export function run(env = process.env) {
     return 0;
   }
 
-  const action = { issue: issueNumber, user, x: parsed.x, at: parsed.at };
+  const action = { issue: issueNumber, user, x: parsed.x, y: parsed.y, at: parsed.at };
   const applied = applyPlay(state, action);
 
-  // The share card headlines a record, so refresh it when one is set or a round
-  // ends - not on every single drop.
-  const share = Boolean(applied.collapseEntry) || applied.recordBroken
-    || !existsSync(PATHS.share);
+  if (applied.rejected) {
+    setOutputs({
+      skip: 'false',
+      commit: 'false',
+      close: 'true',
+      reply_file: writeReply(REJECTED_REPLY[applied.rejected]),
+    });
+    return 0;
+  }
 
-  writeArtifacts(applied.state, applied.view, { share, shareView: applied.shareView });
+  // The share card shows a reveal, so refresh it when a chapter connects - not
+  // on every single dot.
+  const share = Boolean(applied.connectedEntry) || !existsSync(PATHS.share);
+
+  writeArtifacts(applied.state, applied.view, { share });
 
   refreshReadmes(applied.state, applied.view, repo);
 
-  const summary = applied.collapseEntry
-    ? `collapse at ${applied.collapseEntry.height}px by @${user}`
-    : `height ${Math.round(applied.height)}px, ${applied.view.blocks.length} blocks`;
+  const summary = applied.connectedEntry
+    ? `chapter ${applied.connectedEntry.chapter} connected through ${applied.connectedEntry.pathDots} dots`
+    : plural(applied.view.dots.length, 'dot');
 
   setOutputs({
     skip: 'false',
     commit: 'true',
     close: 'true',
-    reply_file: writeReply(successReply(applied, repo)),
-    commit_message: `tower: #${issueNumber} x=${parsed.x} (${summary}) [skip ci]`,
+    reply_file: writeReply(successReply(applied, action, repo)),
+    commit_message: `dots: #${issueNumber} (${parsed.x}, ${parsed.y}) ${summary} [skip ci]`,
   });
   return 0;
 }

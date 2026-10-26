@@ -1,20 +1,27 @@
-name: 🧱 Drop a block / ブロックを落とす
-description: Pick an x coordinate and stack a block onto the shared tower
-title: 'drop: '
+name: 🔵 Place a dot / 点を打つ
+description: Place one dot on the shared grid. Nobody knows when the dots will connect
+title: 'dot: '
 labels: ['play']
 body:
   - type: markdown
     attributes:
       value: |
-        The platform spans x = 140 to 340. Enter one integer in that range.
-        Your block's size and tilt are derived from the issue number, so you do not get to choose them.
+        You can't connect the dots looking forward. Place one anyway — where?
+        Dots within 2 steps of each other are linked, but no line is drawn until a chain of them reaches from the left edge to the right. Then the whole path lights up.
 
-        土台は x = 140 から 340 までの 200px です。この範囲の整数をひとつだけ入力してください。
-        ブロックの大きさと傾きは Issue 番号から決まるので、選ぶことはできません。
+        点は、打っているあいだはつながらない。それでも打つ。次は、どこに打つ？
+        2 マス以内の点同士は見えないところでつながっています。その連なりが左端から右端まで届いたとき、道筋が一気に描かれます。
   - type: input
     id: x
     attributes:
-      label: x coordinate to drop at
-      placeholder: '240'
+      label: x (1–16, left to right)
+      placeholder: '7'
+    validations:
+      required: true
+  - type: input
+    id: y
+    attributes:
+      label: y (1–9, bottom to top)
+      placeholder: '3'
     validations:
       required: true

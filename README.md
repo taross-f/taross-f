@@ -24,38 +24,41 @@
 - 🏡 Based in Saitama, Japan. Father of three
 - ✍️ Writing (in Japanese) at [blog.taross-f.dev](https://blog.taross-f.dev/)
 
-## 🧱 Shared Tower — open an issue. There is no other setup.
+## 🔵 Connecting the Dots — open an issue. There is no other setup.
 
-Everyone stacks onto one shared tower. Put a single x coordinate in an issue and a block drops onto
-the board below. Knock the tower over and its score goes to the hall of fame, then the next round
-starts from an empty platform.
+> *"You can't connect the dots looking forward; you can only connect them looking backwards. So you have to trust that the dots will somehow connect in your future."* — Steve Jobs
+
+Everyone places dots on one shared grid. No lines are drawn — the board is just a scatter of dots.
+But dots close to each other are quietly linked, and the moment those hidden links run all the way
+from the left edge to the right, **the dots connect**: the path lights up across the board, tracing
+through dots placed days or weeks earlier, and everyone whose dot is on it gets a mention.
+
+Nobody can see it coming. **So — where will you place yours?**
 
 <!-- BOARD:START -->
-[![Tower board](assets/board.svg?v=13-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
+[![Connecting the dots board](assets/board.svg?v=0-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
 
-**[▶ Drop a block](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — open an issue with one integer between 140 and 340. That is the whole game.
+**[▶ Place a dot](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — open an issue with two integers: x (1–16) and y (1–9).
 
-| Round | Height | Blocks | Best ever |
-|---:|---:|---:|---:|
-| 1 | 97 px | 13 | 97 px |
+| Chapter | Dots placed | Connected so far |
+|---:|---:|---:|
+| 1 | 0 | 0 |
 <!-- BOARD:END -->
 
 ### How to play
 
 1. **[Open an issue](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — the `play` label is applied for you
-2. Write one **integer between 140 and 340** in the body — the x coordinate you are dropping at
-3. Within a minute GitHub Actions runs the physics, updates the board and this README, and replies on your issue
+2. Write **two integers**: x (1–16) and y (1–9). `7 3`, `7,3` and `(7, 3)` all work
+3. Within a minute GitHub Actions places your dot, updates the board and this README, and replies on your issue
 
 | Rule | |
 |:--|:--|
-| Platform | 200px wide, from `x = 140` to `340`. Leave it and you fall |
-| Block shape | Derived from the issue number. **You do not get to choose** |
-| Score | Height of the highest corner of any block |
-| Collapse | A block leaves the platform, or the tower loses 20px or more against the previous turn |
-| Cooldown | One drop per player every 10 minutes |
-
-On a collapse the round's score is recorded, the blocks are cleared, and a new round begins.
-The **first integer** in the body wins, so `250`, `x=250` and `２５０` all mean the same thing.
+| Grid | x = 1–16 (left to right), y = 1–9 (bottom to top). One dot per point |
+| Hidden links | Two dots are linked when they are within 2 steps on both axes, diagonals included. Links are never drawn while a chapter is in play |
+| Connected | A chain of linked dots joins column 1 to column 16. The dot that completes it is always on the path |
+| Reveal | The shortest such path is traced across the board, and the reply mentions everyone whose dot is on it |
+| Next chapter | The reveal stays up until the next dot, which starts an empty grid |
+| Cooldown | One dot per player every 10 minutes |
 
 ## 🚀 Career
 
