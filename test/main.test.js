@@ -30,14 +30,18 @@ function playAll(moves, state = defaultState()) {
   return applied;
 }
 
-// Closes on the eighth dot by crossing the first stretch out of now.
-const CONNECTING = [[2, 7], [5, 8], [8, 6], [11, 7], [10, 3], [6, 2], [3, 3], [1, 7, 'carol']];
+// Scattered dots; the last one bridges the only gap and the chain connects.
+const CONNECTING = [
+  [1, 3, 'alice'], [12, 8, 'bob'], [13, 4, 'bob'], [3, 5, 'alice'], [4, 1, 'dave'],
+  [15, 5, 'bob'], [7, 6, 'alice'], [16, 4, 'erin'], [5, 4, 'dave'], [11, 6, 'erin'],
+  [9, 5, 'carol'],
+];
 
 // ---------------------------------------------------------------------------
 // state transitions
 // ---------------------------------------------------------------------------
 
-test('an open dot appends to the log and leaves the chapter alone', () => {
+test('an unconnected dot appends to the log and leaves the chapter alone', () => {
   const state = defaultState();
   const applied = applyPlay(state, { issue: 1, user: 'alice', x: 3, y: 6, at: '2026-10-26T00:00:00Z' });
 
@@ -49,60 +53,76 @@ test('an open dot appends to the log and leaves the chapter alone', () => {
   assert.equal(state.actions.length, 0, 'applyPlay must not mutate the state it is given');
 });
 
-test('a connecting dot records the chapter, clears the log, and opens the next one', () => {
-  const applied = playAll(CONNECTING);
+test('nothing connects until the last piece, then the chapter is recorded and reset', () => {
+  let state = defaultState();
+  CONNECTING.slice(0, -1).forEach(([x, y, user]) => {
+    const applied = applyPlay(state, act(x, y, user));
+    assert.equal(applied.connectedEntry, null, `(${x}, ${y}) connected too early`);
+    state = applied.state;
+  });
 
-  assert.ok(applied.connectedEntry);
-  assert.equal(applied.connectedEntry.dots, CONNECTING.length);
-  assert.equal(applied.connectedEntry.connectedBy, 'carol');
+  const applied = playAll(CONNECTING);
+  const e = applied.connectedEntry;
+  assert.ok(e);
+  assert.equal(e.dots, CONNECTING.length);
+  assert.equal(e.pathDots, applied.path.length);
+  assert.equal(e.connectedBy, 'carol');
+  assert.equal(e.people, new Set(applied.path.map((d) => d.user)).size);
+  assert.equal(e.oldestIssue, Math.min(...applied.path.map((d) => d.issue)));
+
   assert.equal(applied.state.chapter, 2);
-  assert.equal(applied.state.actions.length, 0, 'a new chapter starts from an empty log');
+  assert.equal(applied.state.actions.length, 0, 'a new chapter starts from an empty grid');
   assert.equal(applied.state.hallOfFame.length, 1);
   // The cooldown record has to survive the chapter reset.
   assert.ok(applied.state.lastPlayedBy.carol);
 });
 
-test('the board keeps showing the closed chapter until the next dot', () => {
+test('the revealed path runs edge to edge and ends on nobody but its own dots', () => {
+  const { path } = playAll(CONNECTING);
+  assert.equal(path[0].x, 1);
+  assert.equal(path[path.length - 1].x, 16);
+  assert.ok(path.some((d) => d.user === 'carol'), 'the last piece is on the path');
+});
+
+test('the board keeps showing the reveal until the next dot', () => {
   const applied = playAll(CONNECTING);
-  assert.equal(applied.view.connected, true);
+  assert.ok(applied.view.reveal);
   assert.equal(applied.view.chapter, 1);
   assert.equal(applied.view.dots.length, CONNECTING.length);
 
   const next = applyPlay(applied.state, act(4, 4));
   assert.equal(next.view.chapter, 2);
   assert.equal(next.view.dots.length, 1);
-  assert.equal(next.view.connected, false);
+  assert.equal(next.view.reveal, null);
 });
 
-test('a dot on the end of the line is refused without touching state', () => {
+test('a dot on an occupied point is refused without touching state', () => {
   const first = applyPlay(defaultState(), act(4, 4));
   const again = applyPlay(first.state, act(4, 4, 'bob'));
-  assert.equal(again.rejected, 'same_dot');
+  assert.equal(again.rejected, 'occupied');
   assert.equal(again.state, first.state);
 });
 
-test('a stored log that no longer replays is closed out, not silently rewritten', () => {
-  const state = {
-    ...defaultState(),
-    actions: [act(3, 5), act(3, 5)],
-  };
+test('a stored log that no longer replays starts a new chapter instead of revealing', () => {
+  const state = { ...defaultState(), actions: [act(3, 5), act(3, 5)] };
   const applied = applyPlay(state, act(6, 6, 'dave'));
   assert.equal(applied.drifted, true);
+  assert.equal(applied.connectedEntry, null);
   assert.equal(applied.state.chapter, 2);
-  assert.equal(applied.state.hallOfFame.length, 1);
+  assert.equal(applied.state.hallOfFame.length, 0);
   assert.equal(applied.state.actions.length, 1);
 });
 
-test('the hall of fame keeps the best five, longest first', () => {
-  let state = defaultState();
-  state.hallOfFame = [9, 4, 12, 7, 2].map((dots, i) => ({
-    chapter: i + 1, dots, connectedBy: 'someone', at: '2026-01-01T00:00:00Z',
+test('past connections keep the five most recent, newest first', () => {
+  const state = defaultState();
+  state.hallOfFame = [5, 4, 3, 2, 1].map((chapter) => ({
+    chapter, dots: 10, pathDots: 8, people: 3, oldestIssue: 1, connectedBy: 'someone', at: 'x',
   }));
   state.chapter = 6;
 
   const fame = playAll(CONNECTING, state).state.hallOfFame;
   assert.equal(fame.length, HALL_OF_FAME_SIZE);
-  assert.deepEqual(fame.map((e) => e.dots), [12, 9, 8, 7, 4]);
+  assert.deepEqual(fame.map((e) => e.chapter), [6, 5, 4, 3, 2]);
 });
 
 test('a state file from the old tower game starts the dots game fresh', () => {
@@ -179,26 +199,29 @@ test('every shipped README carries the markers and a language switcher', () => {
 
 test('the board block is rendered in the language of each README', () => {
   const state = { ...defaultState(), chapter: 2, actions: [] };
-  const entry = { chapter: 1, dots: 9, connectedBy: 'alice', at: '2026-01-01T00:00:00Z' };
+  const entry = {
+    chapter: 1, dots: 9, pathDots: 7, people: 3, oldestIssue: 4, connectedBy: 'alice', at: 'x',
+  };
   state.hallOfFame = [entry];
-  const view = buildView(state, [], entry);
+  const view = buildView(state, [], { entry, path: [], links: [] });
 
   const en = buildBoardBlock(state, view, 'taross-f/taross-f', 'en');
   const ja = buildBoardBlock(state, view, 'taross-f/taross-f', 'ja');
 
   assert.notEqual(en, ja, 'the two languages should not render identically');
   assert.match(en, /Place a dot/);
-  assert.match(en, /Hall of fame/);
-  assert.match(en, /\| Chapter \| Dots \| Best ever \|/);
+  assert.match(en, /Past connections/);
+  assert.match(en, /\| Chapter \| Dots placed \| Connected so far \|/);
   assert.ok(!/[ぁ-んァ-ン一-龯]/.test(en), 'the English block should carry no Japanese text');
 
   assert.match(ja, /点を打つ/);
-  assert.match(ja, /殿堂入り/);
+  assert.match(ja, /これまでのつながり/);
 
   // Both must stay factually identical: same numbers, same image, same links.
   for (const block of [en, ja]) {
     assert.match(block, /assets\/board\.svg\?v=0-2/);
-    assert.match(block, /\| 2 \| 0 \| 9 \|/);
+    assert.match(block, /\| 2 \| 0 \| 1 \|/);
+    assert.match(block, /\| 1 \| 9 \| 7 \| 3 \| @alice \|/);
     assert.match(block, /@alice/);
   }
 });
@@ -215,7 +238,8 @@ test('LANGUAGES matches the configured README targets', () => {
 test('a hostile display name cannot break out of the README table', () => {
   const state = defaultState();
   state.hallOfFame = [{
-    chapter: 1, dots: 2, connectedBy: 'evil|user](javascript:alert(1))', at: 'x',
+    chapter: 1, dots: 2, pathDots: 2, people: 1, oldestIssue: 1,
+    connectedBy: 'evil|user](javascript:alert(1))', at: 'x',
   }];
   const view = buildView(state, []);
   const block = buildBoardBlock(state, view, 'taross-f/taross-f');
@@ -329,31 +353,35 @@ test('rendering is deterministic and free of NaN', () => {
   }
 });
 
-test('the board carries the message and the whole career line', () => {
+test('the board carries the message and nothing from the profile', () => {
   const svg = renderBoard(sampleViews().empty);
   assert.match(svg, /CONNECTING THE DOTS/);
   assert.match(svg, /どこに打つ？/);
-  for (const year of ['2009', '2012', '2018', '2021', '2024']) assert.ok(svg.includes(`>${year}<`), year);
-  assert.match(svg, />NOW</);
+  for (const word of ['PKSHA', 'gloops', 'REVISIO', 'Sobal', 'NOW']) {
+    assert.ok(!svg.includes(word), `${word} should not be on the board`);
+  }
 });
 
-test('every placed dot is drawn, and only the newest one is outlined', () => {
+test('while a chapter is in play no link between dots is drawn', () => {
   const view = sampleViews().open;
   const svg = renderBoard(view);
-  const dots = (svg.match(/<title>#\d+ /g) || []).length;
-  assert.equal(dots, view.dots.length);
-  assert.equal((svg.match(/stroke="#ffffff"/g) || []).length, 1);
+  assert.ok(!/<(line|polyline)\b/.test(svg.split('</style>')[1]), 'the links must stay hidden');
+  assert.equal((svg.match(/<title>#\d+ /g) || []).length, view.dots.length);
+  assert.equal((svg.match(/stroke="#ffffff"/g) || []).length, 1, 'only the newest dot is outlined');
 });
 
-test('an empty future invites the first dot', () => {
+test('a connected chapter traces its path and lights every dot on it', () => {
+  const view = sampleViews().connected;
+  const svg = renderBoard(view);
+  assert.match(svg, /<polyline class="trace" pathLength="1"/);
+  assert.equal((svg.match(/class="lit"/g) || []).length, view.reveal.path.length);
+  assert.match(svg, /Chapter 1 connected/);
+});
+
+test('an empty grid invites the first dot', () => {
   const svg = renderBoard(sampleViews().empty);
   assert.match(svg, /open an issue to place the first dot/);
   assert.doesNotThrow(() => checkWellFormed(svg));
-});
-
-test('a connected chapter is called out on the board', () => {
-  const svg = renderBoard(sampleViews().connected);
-  assert.match(svg, /Chapter 1 connected at 8 dots/);
 });
 
 test('user supplied text is escaped into the SVG', () => {

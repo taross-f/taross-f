@@ -26,21 +26,21 @@
 
 ## 🔵 Connecting the Dots — open an issue. There is no other setup.
 
-> *"You can't connect the dots looking forward; you can only connect them looking backwards."* — Steve Jobs
+> *"You can't connect the dots looking forward; you can only connect them looking backwards. So you have to trust that the dots will somehow connect in your future."* — Steve Jobs
 
-SI, mobile games, IoT and edge AI, AI SaaS: looking back, those dots connect into one line.
-From here on, the job is to place the next dots. **So — where would you put the next one?**
+Everyone places dots on one shared grid. No lines are drawn — the board is just a scatter of dots.
+But dots close to each other are quietly linked, and the moment those hidden links run all the way
+from the left edge to the right, **the dots connect**: the path lights up across the board, tracing
+through dots placed days or weeks earlier, and everyone whose dot is on it gets a mention.
 
-Write a point on the future grid in an issue and the line is drawn from the last dot to yours.
-The moment the line touches itself — an earlier dot, an earlier segment, or *now* — the dots
-have connected: the chapter is closed into the hall of fame and the next dot starts a fresh line from now.
+Nobody can see it coming. **So — where will you place yours?**
 
 <!-- BOARD:START -->
 [![Connecting the dots board](assets/board.svg?v=0-1)](https://github.com/taross-f/taross-f/issues/new?template=play.yml)
 
-**[▶ Place a dot](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — open an issue with two integers: x (1–12) and y (1–9).
+**[▶ Place a dot](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — open an issue with two integers: x (1–16) and y (1–9).
 
-| Chapter | Dots | Best ever |
+| Chapter | Dots placed | Connected so far |
 |---:|---:|---:|
 | 1 | 0 | 0 |
 <!-- BOARD:END -->
@@ -48,18 +48,17 @@ have connected: the chapter is closed into the hall of fame and the next dot sta
 ### How to play
 
 1. **[Open an issue](https://github.com/taross-f/taross-f/issues/new?template=play.yml)** — the `play` label is applied for you
-2. Write **two integers**: x (1–12) and y (1–9). `7 3`, `7,3` and `(7, 3)` all work
-3. Within a minute GitHub Actions draws the line, updates the board and this README, and replies on your issue
+2. Write **two integers**: x (1–16) and y (1–9). `7 3`, `7,3` and `(7, 3)` all work
+3. Within a minute GitHub Actions places your dot, updates the board and this README, and replies on your issue
 
 | Rule | |
 |:--|:--|
-| Grid | x = 1–12 (left to right, away from *now*), y = 1–9 (bottom to top) |
-| Line | Always drawn from the previous dot of the chapter to yours. The first one starts at *now* |
-| Connected | Your stretch of line touches anything already drawn in the chapter. The chapter closes |
-| Score | Dots in a chapter when it connects. The longer the line runs without touching itself, the better |
+| Grid | x = 1–16 (left to right), y = 1–9 (bottom to top). One dot per point |
+| Hidden links | Two dots are linked when they are within 2 steps on both axes, diagonals included. Links are never drawn while a chapter is in play |
+| Connected | A chain of linked dots joins column 1 to column 16. The dot that completes it is always on the path |
+| Reveal | The shortest such path is traced across the board, and the reply mentions everyone whose dot is on it |
+| Next chapter | The reveal stays up until the next dot, which starts an empty grid |
 | Cooldown | One dot per player every 10 minutes |
-
-Nobody can see how the dots will connect until somebody places the one that does.
 
 ## 🚀 Career
 

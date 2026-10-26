@@ -1,40 +1,30 @@
 /**
- * The game itself: a line of dots that starts at "now" and runs into the future.
+ * The game itself: dots go down one at a time, and nobody sees them connect
+ * until they do.
  *
- * The career up to today is fixed and already connected. Every play adds one
- * dot on the future grid and the line is drawn to it from the previous dot. The
- * moment the new stretch of line touches any earlier part of the chapter - an
- * old dot, an old segment, or the "now" dot - the dots have connected: the
- * chapter is closed and recorded, and the next play starts a fresh line from
- * "now" again.
+ * Any two dots within REACH of each other (counting diagonals) are linked, but
+ * the links are never drawn while a chapter is being played. The moment the
+ * linked dots run all the way from the left edge of the grid to the right edge,
+ * the dots have connected: the path is revealed, the chapter is recorded, and
+ * the next dot starts a fresh, empty grid.
  *
- * Coordinates are small integers, so every geometric test below is exact
- * integer arithmetic. Replaying the stored log always gives the same answer.
+ * Before the newest dot there was no such path, so every path the reveal can
+ * find runs through it - the newest dot is always the missing piece.
+ *
+ * Coordinates are small integers and the search is a plain BFS in placement
+ * order, so replaying the stored log always gives the same answer.
  */
 
-/** The future grid. x runs left to right away from "now", y runs bottom to top. */
+/** The grid. x runs left to right, y runs bottom to top. */
 export const GRID = {
   X_MIN: 1,
-  X_MAX: 12,
+  X_MAX: 16,
   Y_MIN: 1,
   Y_MAX: 9,
 };
 
-/** Where today sits on the grid: just left of column 1, half way up. */
-export const NOW = { x: 0, y: 5 };
-
-/**
- * The dots that are already connected. Fixed - only the future is playable.
- * `side` says which side of the line the label sits on so neighbours never
- * collide.
- */
-export const CAREER = [
-  { year: '2009', name: 'Sobal', role: 'SI', side: 'below' },
-  { year: '2012', name: 'gloops', role: 'mobile games', side: 'above' },
-  { year: '2018', name: 'REVISIO', role: 'IoT · edge AI', side: 'below' },
-  { year: '2021', name: 'PKSHA', role: 'AI SaaS', side: 'above' },
-  { year: '2024', name: 'Exec. Officer', role: 'AI SaaS org', side: 'below' },
-];
+/** How far apart two dots can be and still be linked, in grid steps. */
+export const REACH = 2;
 
 export function inGrid(point) {
   return Number.isInteger(point.x) && Number.isInteger(point.y)
@@ -42,90 +32,96 @@ export function inGrid(point) {
     && point.y >= GRID.Y_MIN && point.y <= GRID.Y_MAX;
 }
 
-function samePoint(a, b) {
-  return a.x === b.x && a.y === b.y;
-}
-
-/** Sign of the turn a -> b -> c: 1 left, -1 right, 0 collinear. */
-function orient(a, b, c) {
-  const v = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-  return Math.sign(v);
-}
-
-/** c is collinear with a-b; is it within the segment's bounding box? */
-function onSegment(a, b, c) {
-  return Math.min(a.x, b.x) <= c.x && c.x <= Math.max(a.x, b.x)
-    && Math.min(a.y, b.y) <= c.y && c.y <= Math.max(a.y, b.y);
-}
-
-/** Do the closed segments a-b and c-d share at least one point? */
-export function segmentsTouch(a, b, c, d) {
-  const o1 = orient(a, b, c);
-  const o2 = orient(a, b, d);
-  const o3 = orient(c, d, a);
-  const o4 = orient(c, d, b);
-
-  if (o1 !== o2 && o3 !== o4) return true;
-  if (o1 === 0 && onSegment(a, b, c)) return true;
-  if (o2 === 0 && onSegment(a, b, d)) return true;
-  if (o3 === 0 && onSegment(c, d, a)) return true;
-  if (o4 === 0 && onSegment(c, d, b)) return true;
-  return false;
+/** Linked when both axes are within REACH - a square, not a circle. */
+export function linked(a, b) {
+  return Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= REACH;
 }
 
 /**
- * Would the stretch from the last dot to `next` touch the line drawn so far?
+ * Shortest chain of linked dots from the left edge to the right edge.
  *
- * `path` starts with NOW. The segment ending at the last dot shares that dot
- * with the new one by construction, so it only counts when the new stretch
- * doubles back along it.
- *
- * @param {{x:number,y:number}[]} path
- * @param {{x:number,y:number}} next
- * @returns {number} index of the earliest segment touched, or -1
+ * @param {{x:number,y:number}[]} dots in placement order
+ * @returns {number[]|null} indices into `dots`, left edge first, or null
  */
-export function findConnection(path, next) {
-  const last = path[path.length - 1];
+export function findPath(dots) {
+  const parent = new Map();
+  const queue = [];
 
-  for (let i = 0; i < path.length - 1; i++) {
-    const a = path[i];
-    const b = path[i + 1];
+  dots.forEach((d, i) => {
+    if (d.x === GRID.X_MIN) {
+      parent.set(i, -1);
+      queue.push(i);
+    }
+  });
 
-    if (i === path.length - 2) {
-      // Adjacent segment a -> last. Touching at `last` is just the joint;
-      // folding back over it is a real connection.
-      const doublesBack = orient(a, last, next) === 0
-        && (a.x - last.x) * (next.x - last.x) + (a.y - last.y) * (next.y - last.y) > 0;
-      if (doublesBack) return i;
-    } else if (segmentsTouch(a, b, last, next)) {
-      return i;
+  for (let head = 0; head < queue.length; head++) {
+    const i = queue[head];
+    if (dots[i].x === GRID.X_MAX) {
+      const path = [];
+      for (let at = i; at !== -1; at = parent.get(at)) path.unshift(at);
+      return path;
+    }
+    dots.forEach((d, j) => {
+      if (!parent.has(j) && linked(dots[i], d)) {
+        parent.set(j, i);
+        queue.push(j);
+      }
+    });
+  }
+  return null;
+}
+
+/**
+ * Every pair of linked dots among `indices`, so the reveal can show how much
+ * was quietly connected all along.
+ *
+ * @returns {[number, number][]}
+ */
+export function linksAmong(dots, indices) {
+  const links = [];
+  for (let a = 0; a < indices.length; a++) {
+    for (let b = a + 1; b < indices.length; b++) {
+      if (linked(dots[indices[a]], dots[indices[b]])) links.push([indices[a], indices[b]]);
     }
   }
-  return -1;
+  return links;
+}
+
+/** Indices of every dot linked, directly or not, to dot `start`. */
+export function componentOf(dots, start) {
+  const seen = new Set([start]);
+  const queue = [start];
+  for (let head = 0; head < queue.length; head++) {
+    const i = queue[head];
+    dots.forEach((d, j) => {
+      if (!seen.has(j) && linked(dots[i], d)) {
+        seen.add(j);
+        queue.push(j);
+      }
+    });
+  }
+  return [...seen].sort((a, b) => a - b);
 }
 
 /**
  * Add one dot to a chapter.
  *
- * @param {{x:number,y:number}[]} dots the chapter's dots so far (NOW excluded)
+ * @param {{x:number,y:number}[]} dots the chapter's dots so far
  * @param {{x:number,y:number}} next
- * @returns {{ok:false,code:string}|{ok:true,connected:boolean,dots:object[]}}
+ * @returns {{ok:false,code:string}|{ok:true,dots:object[],path:number[]|null}}
  */
 export function placeDot(dots, next) {
   if (!inGrid(next)) return { ok: false, code: 'off_grid' };
+  if (dots.some((d) => d.x === next.x && d.y === next.y)) return { ok: false, code: 'occupied' };
 
-  const path = [NOW, ...dots];
-  const last = path[path.length - 1];
-  if (samePoint(last, next)) return { ok: false, code: 'same_dot' };
-
-  const connected = findConnection(path, next) !== -1;
-  return { ok: true, connected, dots: [...dots, next] };
+  const placed = [...dots, next];
+  return { ok: true, dots: placed, path: findPath(placed) };
 }
 
 /**
  * Replay a stored chapter. The stored log never contains a connecting move -
- * that move closes the chapter and clears the log - so a connection here means
- * the rules changed underneath the record.
+ * that move closes the chapter and clears the log - so a path here means the
+ * rules changed underneath the record.
  *
  * @param {{x:number,y:number}[]} actions
  */
@@ -133,7 +129,7 @@ export function replay(actions) {
   let dots = [];
   for (const action of actions) {
     const result = placeDot(dots, action);
-    if (!result.ok || result.connected) {
+    if (!result.ok || result.path) {
       return { dots, consistent: false };
     }
     dots = result.dots;

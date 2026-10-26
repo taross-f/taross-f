@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
 import { parseAction, X_MIN, X_MAX, Y_MIN, Y_MAX } from './parse.js';
-import { placeDot, replay } from './dots.js';
+import { componentOf, linksAmong, placeDot, replay } from './dots.js';
 import { buildView, renderBoard, renderShare } from './render.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -81,10 +81,6 @@ export function writeState(file, state) {
   writeFileSync(file, `${JSON.stringify(state, null, 2)}\n`);
 }
 
-function bestDots(hallOfFame) {
-  return hallOfFame.reduce((max, e) => (e.dots > max ? e.dots : max), 0);
-}
-
 // ---------------------------------------------------------------------------
 // applying a move
 // ---------------------------------------------------------------------------
@@ -100,80 +96,69 @@ export function applyPlay(state, action) {
   const history = replay(state.actions);
 
   // The stored log never contains a connecting move, so an inconsistent replay
-  // means the rules no longer agree with the record they produced. Close the
-  // chapter out honestly rather than pretending the line still stands.
+  // means the rules no longer agree with the record they produced. Start the
+  // chapter over rather than revealing a connection nobody actually made.
   const drifted = !history.consistent;
 
-  let chapter = state.chapter;
-  let actions = state.actions;
-  let hallOfFame = state.hallOfFame;
-  let dots = history.dots;
-
-  if (drifted) {
-    if (history.dots.length > 0) {
-      hallOfFame = recordChapter(hallOfFame, {
-        chapter,
-        dots: history.dots.length,
-        connectedBy: history.dots[history.dots.length - 1].user,
-        at: action.at,
-        note: 'closed out after a rule change',
-      });
-    }
-    chapter += 1;
-    actions = [];
-    dots = [];
-  }
+  const chapter = drifted ? state.chapter + 1 : state.chapter;
+  const actions = drifted ? [] : state.actions;
+  const dots = drifted ? [] : history.dots;
 
   const result = placeDot(dots, action);
   if (!result.ok) {
     return { rejected: result.code, state };
   }
 
-  const previousBest = bestDots(hallOfFame);
-
   const next = {
     ...state,
     chapter,
     actions,
-    hallOfFame,
     lastPlayedBy: { ...state.lastPlayedBy, [action.user]: action.at },
   };
 
-  let connectedEntry = null;
+  let reveal = null;
 
-  if (result.connected) {
-    connectedEntry = {
+  if (result.path) {
+    const path = result.path.map((i) => result.dots[i]);
+    const oldest = path.reduce((min, d) => (d.issue < min.issue ? d : min), path[0]);
+    const entry = {
       chapter: next.chapter,
       dots: result.dots.length,
+      pathDots: path.length,
+      people: new Set(path.map((d) => d.user)).size,
+      oldestIssue: oldest.issue,
       connectedBy: action.user,
       at: action.at,
     };
-    next.hallOfFame = recordChapter(next.hallOfFame, connectedEntry);
+    // Everything the path's dots were quietly linked to, to show how much of
+    // the scatter was part of it all along.
+    const component = componentOf(result.dots, result.path[0]);
+    reveal = { entry, path: result.path, links: linksAmong(result.dots, component) };
+
+    next.hallOfFame = recordChapter(next.hallOfFame, entry);
     next.chapter += 1;
-    // The next dot starts a fresh line from now.
+    // The next dot starts a fresh, empty grid.
     next.actions = [];
   } else {
     next.actions = [...actions, action];
   }
 
-  // A connected chapter stays on the board, closed, until the next dot is
+  // A connected chapter stays on the board, revealed, until the next dot is
   // placed - that is the picture worth looking at.
-  const view = buildView(next, result.dots, connectedEntry);
+  const view = buildView(next, result.dots, reveal);
 
   return {
     state: next,
     view,
-    connectedEntry,
+    connectedEntry: reveal ? reveal.entry : null,
+    path: reveal ? reveal.path.map((i) => result.dots[i]) : null,
     drifted,
-    previousBest,
-    recordBroken: !result.connected && result.dots.length > previousBest && previousBest > 0,
   };
 }
 
+/** Most recent first: this is a history of connections, not a leaderboard. */
 function recordChapter(hallOfFame, entry) {
-  return [...hallOfFame, entry]
-    .sort((a, b) => (b.dots - a.dots) || (a.chapter - b.chapter))
-    .slice(0, HALL_OF_FAME_SIZE);
+  return [entry, ...hallOfFame].slice(0, HALL_OF_FAME_SIZE);
 }
 
 // ---------------------------------------------------------------------------
@@ -209,21 +194,25 @@ const BOARD_TEXT = {
     alt: 'Connecting the dots board',
     cta: (url) => `**[▶ Place a dot](${url})** — `
       + `open an issue with two integers: x (${X_MIN}–${X_MAX}) and y (${Y_MIN}–${Y_MAX}).`,
-    statsHead: ['Chapter', 'Dots', 'Best ever'],
-    connected: (c) => `> Chapter ${c.chapter} connected at ${c.dots} dots. `
-      + `Closed by @${escapeMd(c.connectedBy)}. The next dot starts a new line from now.`,
-    fameSummary: 'Hall of fame',
-    fameHead: ['#', 'Chapter', 'Dots', 'Connected by'],
+    statsHead: ['Chapter', 'Dots placed', 'Connected so far'],
+    connected: (c) => `> **Chapter ${c.chapter} connected.** ${c.pathDots} of its ${c.dots} dots, `
+      + `placed by ${c.people} ${c.people === 1 ? 'person' : 'people'} and going back to `
+      + `#${c.oldestIssue}, turned out to run edge to edge. The last piece was `
+      + `@${escapeMd(c.connectedBy)}'s. The next dot starts an empty grid.`,
+    fameSummary: 'Past connections',
+    fameHead: ['Chapter', 'Dots placed', 'Dots on the path', 'People', 'Last piece'],
   },
   ja: {
     alt: 'Connecting the dots の盤面',
     cta: (url) => `**[▶ 点を打つ](${url})** — `
       + `x (${X_MIN}–${X_MAX}) と y (${Y_MIN}–${Y_MAX}) の整数 2 つを書いて issue を立てるだけ。`,
-    statsHead: ['章', '点の数', '最高記録'],
-    connected: (c) => `> Chapter ${c.chapter} は ${c.dots} 個の点でつながりました。`
-      + `つないだのは @${escapeMd(c.connectedBy)}。次の点から、また「今」から新しい線が始まります。`,
-    fameSummary: '殿堂入り',
-    fameHead: ['#', '章', '点の数', 'つないだ人'],
+    statsHead: ['章', '打たれた点', 'これまでのつながり'],
+    connected: (c) => `> **Chapter ${c.chapter} がつながりました。** ${c.dots} 個の点のうち `
+      + `${c.pathDots} 個 (${c.people} 人が打った、古いものは #${c.oldestIssue}) が、`
+      + `端から端までつながっていました。最後のピースは @${escapeMd(c.connectedBy)}。`
+      + `次の点から、また空の盤面が始まります。`,
+    fameSummary: 'これまでのつながり',
+    fameHead: ['章', '打たれた点', 'つながった点', '人数', '最後のピース'],
   },
 };
 
@@ -244,7 +233,7 @@ export function buildBoardBlock(state, view, repo, lang = 'en') {
   lines.push('');
   lines.push(`| ${t.statsHead.join(' | ')} |`);
   lines.push('|---:|---:|---:|');
-  lines.push(`| ${state.chapter} | ${state.actions.length} | ${view.best} |`);
+  lines.push(`| ${state.chapter} | ${state.actions.length} | ${state.chapter - 1} |`);
 
   if (view.connectedEntry) {
     lines.push('');
@@ -256,9 +245,10 @@ export function buildBoardBlock(state, view, repo, lang = 'en') {
     lines.push(`<details><summary>${t.fameSummary}</summary>`);
     lines.push('');
     lines.push(`| ${t.fameHead.join(' | ')} |`);
-    lines.push('|---:|---:|---:|:--|');
-    state.hallOfFame.forEach((e, i) => {
-      lines.push(`| ${i + 1} | ${e.chapter} | ${e.dots} | @${escapeMd(e.connectedBy)} |`);
+    lines.push('|---:|---:|---:|---:|:--|');
+    state.hallOfFame.forEach((e) => {
+      lines.push(`| ${e.chapter} | ${e.dots} | ${e.pathDots} | ${e.people} `
+        + `| @${escapeMd(e.connectedBy)} |`);
     });
     lines.push('');
     lines.push('</details>');
@@ -316,12 +306,12 @@ function writeReply(body) {
 }
 
 const REJECTED_REPLY = {
-  same_dot: [
-    'That is where the line already ends.',
+  occupied: [
+    'There is already a dot there.',
     '',
-    'Pick any other point on the grid and open a new issue.',
+    'Pick an empty point on the grid and open a new issue.',
     '',
-    'そこは今の線の端と同じ点です。別の点を選んで issue を立て直してください。',
+    'そこにはもう点があります。空いている点を選んで issue を立て直してください。',
   ].join('\n'),
   off_grid: [
     'That point is off the grid.',
@@ -336,39 +326,49 @@ function plural(count, word) {
   return `${count} ${word}${count === 1 ? '' : 's'}`;
 }
 
+function ordinal(n) {
+  const tail = n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th');
+  return `${n}${tail}`;
+}
+
 function successReply(applied, action, repo) {
-  const { view, connectedEntry, state } = applied;
+  const { view, connectedEntry, state, path } = applied;
   const lines = [];
 
   if (connectedEntry) {
     lines.push('## Connected / つながった');
     lines.push('');
-    lines.push(`Your dot at (${action.x}, ${action.y}) touched the line: chapter `
-      + `${connectedEntry.chapter} closes at **${connectedEntry.dots} dots**.`);
+    lines.push(`Your dot at **(${action.x}, ${action.y})** was the missing piece. `
+      + `${path.length} dots, placed by ${connectedEntry.people} `
+      + `${connectedEntry.people === 1 ? 'person' : 'people'}, `
+      + 'turned out to run from the left edge to the right:');
     lines.push('');
-    lines.push(`Chapter ${state.chapter} starts from now with the next dot.`);
+    lines.push(`(${action.x}, ${action.y}) が最後のピースでした。打たれた時には誰も気づかなかった `
+      + `${path.length} 個の点が、左端から右端までつながっていました。`);
     lines.push('');
-    lines.push(`(${action.x}, ${action.y}) で線がつながり、Chapter ${connectedEntry.chapter} は `
-      + `${connectedEntry.dots} 個の点で完成しました。次の点から Chapter ${state.chapter} が始まります。`);
+    // Mentioning everyone on the path is the point: their dot, maybe weeks old,
+    // just connected.
+    path.forEach((d, i) => {
+      const mark = d.issue === action.issue ? ' ← the last piece / 最後のピース' : '';
+      lines.push(`${i + 1}. (${d.x}, ${d.y}) — #${d.issue} by @${d.user}${mark}`);
+    });
+    lines.push('');
+    lines.push(`Chapter ${state.chapter} starts on an empty grid with the next dot. / `
+      + `次の点から Chapter ${state.chapter} が空の盤面で始まります。`);
   } else {
     lines.push('## Placed / 点を打ちました');
     lines.push('');
-    lines.push(`Dot at **(${action.x}, ${action.y})**. Chapter **${state.chapter}** now runs `
-      + `**${plural(view.dots.length, 'dot')}** without touching itself.`);
-    if (applied.recordBroken) {
-      lines.push('');
-      lines.push('That is a new record.');
-    }
+    lines.push(`Dot at **(${action.x}, ${action.y})**, the ${ordinal(view.dots.length)} `
+      + `in chapter ${state.chapter}. Nothing has connected yet — or nothing you can see.`);
     lines.push('');
-    lines.push(`(${action.x}, ${action.y}) に点を打ちました。Chapter ${state.chapter} は `
-      + `${view.dots.length} 個の点が、まだどこにもつながらずに伸びています。`);
+    lines.push(`(${action.x}, ${action.y}) に点を打ちました。Chapter ${state.chapter} の `
+      + `${view.dots.length} 個目です。まだ何もつながっていません — 見える範囲では。`);
   }
 
   if (applied.drifted) {
     lines.push('');
-    lines.push('> Note: replaying the stored line no longer holds up under the current rules. '
-      + 'The previous chapter was closed out as a record and play resumed from a new one. / '
-      + '前の章は記録として閉じ、新しい章から再開しています。');
+    lines.push('> Note: the stored chapter no longer replays under the current rules, so '
+      + 'play resumed on a new, empty grid. / ルール変更のため、新しい空の盤面から再開しています。');
   }
 
   lines.push('');
@@ -440,17 +440,16 @@ export function run(env = process.env) {
     return 0;
   }
 
-  // The share card headlines a record, so refresh it when one is set or a
-  // chapter connects - not on every single dot.
-  const share = Boolean(applied.connectedEntry) || applied.recordBroken
-    || !existsSync(PATHS.share);
+  // The share card shows a reveal, so refresh it when a chapter connects - not
+  // on every single dot.
+  const share = Boolean(applied.connectedEntry) || !existsSync(PATHS.share);
 
   writeArtifacts(applied.state, applied.view, { share });
 
   refreshReadmes(applied.state, applied.view, repo);
 
   const summary = applied.connectedEntry
-    ? `chapter ${applied.connectedEntry.chapter} connected at ${applied.connectedEntry.dots} dots`
+    ? `chapter ${applied.connectedEntry.chapter} connected through ${applied.connectedEntry.pathDots} dots`
     : plural(applied.view.dots.length, 'dot');
 
   setOutputs({

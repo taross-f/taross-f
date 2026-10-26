@@ -1,190 +1,202 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" height="500" role="img" aria-label="Connecting the dots: a career line from 2009 to now, and a future grid. Chapter 1 is waiting for its first dot.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" height="500" role="img" aria-label="Connecting the dots: chapter 1 is an empty grid waiting for its first dot.">
   <style>
     .sans { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
-    .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2s ease-out infinite; }
-    @keyframes pulse { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.6); } }
     .ghost { animation: blink 2.4s ease-in-out infinite both; }
     @keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: .95; } }
+    .trace { animation: trace 2.4s cubic-bezier(.45, 0, .2, 1) 0.4s both; }
+    @keyframes trace { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+    .web { animation: fade 1.2s ease-out 2.8s both; }
+    @keyframes fade { from { opacity: 0; } }
+    .lit { transform-box: fill-box; transform-origin: center; animation: lit .5s cubic-bezier(.34, 1.56, .64, 1) both; }
+    @keyframes lit { from { fill: #7cb8ff; transform: scale(.6); } }
+    .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2s ease-out 2.8s infinite both; }
+    @keyframes pulse { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.6); } }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
   </style>
-  <defs>
-    <linearGradient id="past" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#7cb8ff"/>
-      <stop offset="0.5" stop-color="#5fd4c4"/>
-      <stop offset="1" stop-color="#ffd166"/>
-    </linearGradient>
-  </defs>
   <rect x="0" y="0" width="960" height="500" rx="18" fill="#0d1420"/>
   <rect x="0.5" y="0.5" width="959" height="499" rx="18" fill="none" stroke="#22304d"/>
   <text class="mono" x="32" y="40" font-size="12" fill="#ffd166" letter-spacing="2">CONNECTING THE DOTS</text>
-  <text class="sans" x="32" y="68" font-size="19" fill="#e8eef9" font-weight="700">Looking back, the dots connect. Where does the next one go?</text>
-  <text class="sans" x="32" y="92" font-size="14" fill="#8fa2c4">これまでの点はつながった。これからは点を打っていく — 次は、どこに打つ？</text>
-  <rect x="736.5" y="20.5" width="191" height="56" rx="10" fill="#131c2c" stroke="#22304d"/>
-  <text class="mono" x="752" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">CHAPTER</text>
-  <text class="mono" x="752" y="63" font-size="19" fill="hsl(77, 85%, 66%)" font-weight="700">1</text>
-  <text class="mono" x="818" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">DOTS</text>
-  <text class="mono" x="818" y="63" font-size="19" fill="#e8eef9" font-weight="700">0</text>
-  <text class="mono" x="872" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">BEST</text>
-  <text class="mono" x="872" y="63" font-size="19" fill="#ffd166" font-weight="700">0</text>
-  <text class="mono" x="32" y="146" font-size="11" fill="#8fa2c4" letter-spacing="1.5">PAST · CONNECTED</text>
-  <polyline points="64,394 144,362 224,338 304,314 384,296 464,282" fill="none" stroke="url(#past)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="64" cy="394" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2009 Sobal — SI</title></circle>
-  <text class="mono" x="64" y="416" font-size="11" fill="#8fa2c4" text-anchor="middle">2009</text>
-  <text class="sans" x="64" y="432" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">Sobal</text>
-  <text class="sans" x="64" y="446" font-size="11" fill="#8fa2c4" text-anchor="middle">SI</text>
-  <circle cx="144" cy="362" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2012 gloops — mobile games</title></circle>
-  <text class="mono" x="144" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">2012</text>
-  <text class="sans" x="144" y="334" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">gloops</text>
-  <text class="sans" x="144" y="348" font-size="11" fill="#8fa2c4" text-anchor="middle">mobile games</text>
-  <circle cx="224" cy="338" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2018 REVISIO — IoT · edge AI</title></circle>
-  <text class="mono" x="224" y="360" font-size="11" fill="#8fa2c4" text-anchor="middle">2018</text>
-  <text class="sans" x="224" y="376" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">REVISIO</text>
-  <text class="sans" x="224" y="390" font-size="11" fill="#8fa2c4" text-anchor="middle">IoT · edge AI</text>
-  <circle cx="304" cy="314" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2021 PKSHA — AI SaaS</title></circle>
-  <text class="mono" x="304" y="270" font-size="11" fill="#8fa2c4" text-anchor="middle">2021</text>
-  <text class="sans" x="304" y="286" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">PKSHA</text>
-  <text class="sans" x="304" y="300" font-size="11" fill="#8fa2c4" text-anchor="middle">AI SaaS</text>
-  <circle cx="384" cy="296" r="6" fill="#0d1420" stroke="#5fd4c4" stroke-width="3"><title>2024 Exec. Officer — AI SaaS org</title></circle>
-  <text class="mono" x="384" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">2024</text>
-  <text class="sans" x="384" y="334" font-size="13" fill="#e8eef9" text-anchor="middle" font-weight="600">Exec. Officer</text>
-  <text class="sans" x="384" y="348" font-size="11" fill="#8fa2c4" text-anchor="middle">AI SaaS org</text>
-  <text class="mono" x="494" y="146" font-size="11" fill="#ffd166" letter-spacing="1.5">FUTURE · YOUR MOVE</text>
-  <line x1="464" y1="144" x2="464" y2="420" stroke="#22304d" stroke-width="1.5" stroke-dasharray="3 5"/>
-  <circle cx="500" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="410" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="378" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="346" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="314" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="282" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="250" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="218" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="186" r="1.8" fill="#2e3d5c"/>
-  <circle cx="500" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="536" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="572" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="608" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="644" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="680" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="716" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="752" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="788" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="824" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="860" cy="154" r="1.8" fill="#2e3d5c"/>
-  <circle cx="896" cy="154" r="1.8" fill="#2e3d5c"/>
-  <text class="mono" x="500" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
-  <text class="mono" x="536" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
-  <text class="mono" x="572" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
-  <text class="mono" x="608" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
-  <text class="mono" x="644" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
-  <text class="mono" x="680" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
-  <text class="mono" x="716" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
-  <text class="mono" x="752" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
-  <text class="mono" x="788" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
-  <text class="mono" x="824" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">10</text>
-  <text class="mono" x="860" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">11</text>
-  <text class="mono" x="896" y="436" font-size="11" fill="#8fa2c4" text-anchor="middle">12</text>
-  <text class="mono" x="918" y="414" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
-  <text class="mono" x="918" y="382" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
-  <text class="mono" x="918" y="350" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
-  <text class="mono" x="918" y="318" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
-  <text class="mono" x="918" y="286" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
-  <text class="mono" x="918" y="254" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
-  <text class="mono" x="918" y="222" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
-  <text class="mono" x="918" y="190" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
-  <text class="mono" x="918" y="158" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
-  <text class="mono" x="918" y="436" font-size="10" fill="#8fa2c4" text-anchor="middle">x/y</text>
-  <text class="sans" x="698" y="170" font-size="14" fill="#8fa2c4" text-anchor="middle">open an issue to place the first dot</text>
-  <circle class="pulse" cx="464" cy="282" r="9" fill="none" stroke="#ffd166" stroke-width="2"/>
-  <circle cx="464" cy="282" r="8" fill="#ffd166"><title>now — PKSHA Technology, Engineering Manager · FDE</title></circle>
-  <text class="mono" x="452" y="238" font-size="11" fill="#ffd166" text-anchor="end" font-weight="700">NOW</text>
-  <text class="sans" x="452" y="254" font-size="13" fill="#e8eef9" text-anchor="end" font-weight="600">EM · FDE</text>
-  <text class="sans" x="452" y="268" font-size="11" fill="#8fa2c4" text-anchor="end">PKSHA</text>
+  <text class="sans" x="32" y="68" font-size="19" fill="#e8eef9" font-weight="700">You can’t connect the dots looking forward. Place one anyway — where?</text>
+  <text class="sans" x="32" y="92" font-size="14" fill="#8fa2c4">点は、打っているあいだはつながらない。それでも打つ。次は、どこに打つ？</text>
+  <rect x="782.5" y="20.5" width="145" height="56" rx="10" fill="#131c2c" stroke="#22304d"/>
+  <text class="mono" x="798" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">CHAPTER</text>
+  <text class="mono" x="798" y="63" font-size="19" fill="#ffd166" font-weight="700">1</text>
+  <text class="mono" x="866" y="40" font-size="10" fill="#8fa2c4" letter-spacing="1">DOTS</text>
+  <text class="mono" x="866" y="63" font-size="19" fill="#e8eef9" font-weight="700">0</text>
+  <rect x="100" y="136" width="40" height="308" rx="12" fill="#16233a"/>
+  <text class="mono" x="120" y="128" font-size="10" fill="#8fa2c4" text-anchor="middle" letter-spacing="1.5">EDGE</text>
+  <rect x="820" y="136" width="40" height="308" rx="12" fill="#16233a"/>
+  <text class="mono" x="840" y="128" font-size="10" fill="#8fa2c4" text-anchor="middle" letter-spacing="1.5">EDGE</text>
+  <circle cx="120" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="426" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="392" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="358" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="324" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="290" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="256" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="222" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="188" r="1.8" fill="#2e3d5c"/>
+  <circle cx="120" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="168" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="216" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="264" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="312" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="360" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="408" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="456" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="504" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="552" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="600" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="648" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="696" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="744" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="792" cy="154" r="1.8" fill="#2e3d5c"/>
+  <circle cx="840" cy="154" r="1.8" fill="#2e3d5c"/>
+  <text class="mono" x="120" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
+  <text class="mono" x="168" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
+  <text class="mono" x="216" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
+  <text class="mono" x="264" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
+  <text class="mono" x="312" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
+  <text class="mono" x="360" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
+  <text class="mono" x="408" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
+  <text class="mono" x="456" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
+  <text class="mono" x="504" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
+  <text class="mono" x="552" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">10</text>
+  <text class="mono" x="600" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">11</text>
+  <text class="mono" x="648" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">12</text>
+  <text class="mono" x="696" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">13</text>
+  <text class="mono" x="744" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">14</text>
+  <text class="mono" x="792" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">15</text>
+  <text class="mono" x="840" y="460" font-size="11" fill="#8fa2c4" text-anchor="middle">16</text>
+  <text class="mono" x="80" y="430" font-size="11" fill="#8fa2c4" text-anchor="middle">1</text>
+  <text class="mono" x="80" y="396" font-size="11" fill="#8fa2c4" text-anchor="middle">2</text>
+  <text class="mono" x="80" y="362" font-size="11" fill="#8fa2c4" text-anchor="middle">3</text>
+  <text class="mono" x="80" y="328" font-size="11" fill="#8fa2c4" text-anchor="middle">4</text>
+  <text class="mono" x="80" y="294" font-size="11" fill="#8fa2c4" text-anchor="middle">5</text>
+  <text class="mono" x="80" y="260" font-size="11" fill="#8fa2c4" text-anchor="middle">6</text>
+  <text class="mono" x="80" y="226" font-size="11" fill="#8fa2c4" text-anchor="middle">7</text>
+  <text class="mono" x="80" y="192" font-size="11" fill="#8fa2c4" text-anchor="middle">8</text>
+  <text class="mono" x="80" y="158" font-size="11" fill="#8fa2c4" text-anchor="middle">9</text>
+  <text class="mono" x="80" y="460" font-size="10" fill="#8fa2c4" text-anchor="middle">y/x</text>
+  <text class="sans" x="480" y="295" font-size="15" fill="#8fa2c4" text-anchor="middle">open an issue to place the first dot</text>
 </svg>
